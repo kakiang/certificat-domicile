@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\MaisonController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProprietaireController;
 use App\Http\Controllers\QuartierController;
@@ -21,5 +22,6 @@ Route::middleware('auth')->group(function () {
 
 Route::resource('proprietaires', ProprietaireController::class);
 Route::resource('quartiers', QuartierController::class);
+Route::resource('maisons', MaisonController::class);
 
 require __DIR__.'/auth.php';

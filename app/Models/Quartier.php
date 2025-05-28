@@ -9,4 +9,8 @@ class Quartier extends Model {
         'nom',
         'description',
     ];
+
+    public function maisons() {
+        return $this->hasMany(Maison::class);
+    }
 }

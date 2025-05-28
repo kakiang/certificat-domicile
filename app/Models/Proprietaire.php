@@ -16,4 +16,8 @@ class Proprietaire extends Model {
     protected $casts = [
         'date_naissance' => 'date',
     ];
+
+    public function maisons() {
+        return $this->hasMany(Maison::class);
+    }
 }
