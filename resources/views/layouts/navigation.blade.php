@@ -20,6 +20,10 @@
                     <x-nav-link :href="route('proprietaires.index')" :active="request()->routeIs('proprietaires.*')">
                         {{ __('Proprietaires') }}
                     </x-nav-link>
+
+                    <x-nav-link :href="route('quartiers.index')" :active="request()->routeIs('quartiers.*')">
+                        {{ __('Quartiers') }}
+                    </x-nav-link>
                 </div>
             </div>
 
