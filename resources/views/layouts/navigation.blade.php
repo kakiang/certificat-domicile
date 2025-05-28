@@ -7,7 +7,7 @@
                 <div class="shrink-0 flex items-center">
                     <a href="/" class="text-2xl font-bold flex items-center">
                          <x-application-logo class="block h-9 w-auto fill-current text-gray-800 dark:text-gray-200" />
-                        Domicile
+                        {{ config('app.name', 'Certificat Domi') }}
                     </a>
                 </div>
 
@@ -17,8 +17,8 @@
                         {{ __('Dashboard') }}
                     </x-nav-link>
               
-                    <x-nav-link :href="route('login')" :active="request()->routeIs('login')">
-                        {{ __('Login') }}
+                    <x-nav-link :href="route('proprietaires.index')" :active="request()->routeIs('proprietaires.*')">
+                        {{ __('Proprietaires') }}
                     </x-nav-link>
                 </div>
             </div>
