@@ -13,6 +13,11 @@ return new class extends Migration
     {
         Schema::create('proprietaires', function (Blueprint $table) {
             $table->id();
+            $table->string('nom');
+            $table->string('prenom');
+            $table->string('telephone');
+            $table->date('date_naissance');
+            $table->string('lieu_naissance');
             $table->timestamps();
         });
     }
