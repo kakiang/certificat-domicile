@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProprietaireController;
+use App\Http\Controllers\QuartierController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -19,5 +20,6 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::resource('proprietaires', ProprietaireController::class);
+Route::resource('quartiers', QuartierController::class);
 
 require __DIR__.'/auth.php';
