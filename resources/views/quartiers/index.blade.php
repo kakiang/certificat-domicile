@@ -23,7 +23,7 @@
         <x-slot:tbodycontent>
             @forelse($quartiers as $quartier)
                 <tr class="hover:bg-gray-50 transition duration-150">
-                    <td class="px-6 py-1 whitespace-nowrap">
+                    <td class="px-6 py-2 whitespace-nowrap">
                         <div class="flex items-center">
                             <div class="flex gap-4">
                                 <div class="text-gray-500">
@@ -36,10 +36,10 @@
                         </div>
                         
                     </td>
-                    <td class="px-6 py-1 whitespace-nowrap">
+                    <td class="px-6 py-2 whitespace-nowrap">
                         {{ $quartier->description }}
                     </td>
-                    <td class="px-6 py-1 whitespace-nowrap text-right text-sm font-medium">
+                    <td class="px-6 py-2 whitespace-nowrap text-right text-sm font-medium">
                         <div class="flex justify-end space-x-3">
                             <x-show-link href="{{ route('quartiers.show', $quartier) }}" />
                             <x-edit-link href="{{ route('quartiers.edit', $quartier) }}" />
