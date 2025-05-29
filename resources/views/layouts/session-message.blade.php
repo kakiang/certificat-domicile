@@ -1,4 +1,4 @@
-<div class="space-y-3 mb-2">
+<div class="space-y-3 px-6 py-4">
     @if(session('success'))
         <div class="bg-green-50 border-l-4 border-green-500 p-4 rounded">
             <div class="flex items-center">
@@ -8,7 +8,7 @@
                     </svg>
                 </div>
                 <div class="ml-3">
-                    <p class="text-sm text-green-700">{{ session('success') }}</p>
+                    <p class="text-green-700">{{ session('success') }}</p>
                 </div>
             </div>
         </div>
@@ -22,7 +22,7 @@
                     </svg>
                 </div>
                 <div class="ml-3">
-                    <p class="text-sm text-red-700">{{ session('error') }}</p>
+                    <p class="text-red-700">{{ session('error') }}</p>
                 </div>
             </div>
         </div>
