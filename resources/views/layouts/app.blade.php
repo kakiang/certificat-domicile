@@ -34,7 +34,8 @@
             @include('layouts.session-message')
 
             <main>
-                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                {{-- <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg"> --}}
+                <div>
                     {{ $slot }}
                 </div>
             </main>

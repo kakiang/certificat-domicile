@@ -6,7 +6,7 @@
     {{ $attributes->merge([
         'type' => 'submit',
         'class' =>
-            'inline-flex items-center px-5 py-3 bg-gradient-to-r from-indigo-600 to-blue-500 border-0 rounded-lg font-medium text-sm text-white uppercase tracking-wider hover:from-indigo-700 hover:to-blue-600 focus:from-indigo-700 focus:to-blue-600 active:from-indigo-800 active:to-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 transition-all duration-200 ease-out shadow-md hover:shadow-lg transform hover:-translate-y-0.5 active:translate-y-0',
+            'px-5 py-2.5 text-sm font-medium text-white bg-gradient-to-r from-indigo-500 to-blue-500 rounded-lg hover:from-indigo-600 hover:to-blue-600 transition duration-200 shadow-sm',
     ]) }}>
     {{ $slot }}
 </button>

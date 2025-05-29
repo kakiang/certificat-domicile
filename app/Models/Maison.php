@@ -19,4 +19,8 @@ class Maison extends Model {
     public function quartier() {
         return $this->belongsTo(Quartier::class);
     }
+
+    public function habitants(){
+        return $this->hasMany(Habitant::class);
+    }
 }
