@@ -16,6 +16,13 @@
 
     {{-- <script src="https://cdn.tailwindcss.com"></script> --}}
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+     <link href="https://fonts.bunny.net/css?family=caveat-brush:400" rel="stylesheet" />
+
+    <style>
+        .caveat-brush {
+            font-family: 'Caveat Brush', handwriting;
+        }
+    </style>
 </head>
 
 <body class="font-sans antialiased">
@@ -42,6 +49,9 @@
         </div>
 
     </div>
+    @isset($scripts)
+    {{ $scripts }}
+    @endisset
 </body>
 
 </html>

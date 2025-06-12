@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('certificats', function (Blueprint $table) {
             $table->id();
-            $table->date('date_demande');
-            $table->date('date_delivrance');
+            $table->dateTime('date_demande')->useCurrent();
+            $table->date('date_delivrance')->nullable();
             $table->foreignId('habitant_id')->constrained();
             $table->timestamps();
         });
