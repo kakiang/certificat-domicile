@@ -6,6 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class Habitant extends Model {
 
+    public function getFullNameAttribute(){
+        return "{$this->prenom} {$this->nom}";
+    }
+
     protected $fillable = [
         'nom',
         'prenom',

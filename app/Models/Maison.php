@@ -5,6 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 class Maison extends Model {
+
+    public function getFullNameAttribute(){
+        return "{$this->numero} {$this->proprietaire->full_name}";
+    }
+
     protected $fillable = [
         'numero',
         'description',
