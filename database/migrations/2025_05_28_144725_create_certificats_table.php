@@ -16,6 +16,12 @@ return new class extends Migration
             $table->dateTime('date_demande')->useCurrent();
             $table->date('date_delivrance')->nullable();
             $table->foreignId('habitant_id')->constrained();
+            $table->string('piece_identite')->nullable();
+            $table->string('piece_identite_file_path')->nullable();
+            $table->string('piece_identite_slug')->nullable();
+            $table->string('justificatif_domicile')->nullable();
+            $table->string('justificatif_domicile_file_path')->nullable();
+            $table->string('justificatif_domicile_slug')->nullable();
             $table->timestamps();
         });
     }

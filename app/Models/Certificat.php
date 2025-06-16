@@ -9,6 +9,12 @@ class Certificat extends Model {
         'date_demande',
         'date_delivrance',
         'habitant_id',
+        'piece_identite',
+        'piece_identite_file_path',
+        'piece_identite_slug',
+        'justificatif_domicile',
+        'justificatif_domicile_file_path',
+        'justificatif_domicile_slug',
     ];
 
     protected $casts = [

@@ -7,8 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-class User extends Authenticatable
-{
+class User extends Authenticatable {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
 
@@ -38,11 +37,24 @@ class User extends Authenticatable
      *
      * @return array<string, string>
      */
-    protected function casts(): array
-    {
+    protected function casts(): array {
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    /**
+    * Get the Habitant associated with the User.
+    */
+    public function habitant() {
+        return $this->hasOne(Habitant::class);
+    }
+
+    /**
+     * Get the Proprietaire associated with the User.
+     */
+    public function proprietaire() {
+        return $this->hasOne(Proprietaire::class);
     }
 }

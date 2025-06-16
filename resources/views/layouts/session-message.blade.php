@@ -1,4 +1,4 @@
-<div class="space-y-3 px-6 py-4">
+<div class="space-y-3 py-4">
     @if(session('success'))
         <div class="bg-green-50 border-l-4 border-green-500 p-4 rounded">
             <div class="flex items-center">

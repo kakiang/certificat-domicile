@@ -37,13 +37,8 @@
                                 class="flex-shrink-0 h-10 w-10 rounded-full bg-indigo-100 flex items-center justify-center">
                                 <span class="text-indigo-600 font-medium">{{ substr($proprietaire->nom, 0, 1) }}</span>
                             </div>
-                            <div class="ml-4 flex gap-1">
-                                <div class="font-medium">
-                                    {{ $proprietaire->nom }}
-                                </div>
-                                <div class="text-gray-500">
-                                    {{ $proprietaire->prenom }}
-                                </div>
+                            <div class="ml-4 font-medium">
+                                {{ $proprietaire->full_name }}
                             </div>
                         </div>
                     </td>

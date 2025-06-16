@@ -4,14 +4,20 @@ namespace App\Http\Controllers;
 
 use App\Models\Habitant;
 use App\Models\Maison;
+use App\Models\User;
+use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rules;
 
 class HabitantController extends Controller {
     /**
      * Display a listing of the resource.
      */
     public function index() {
-        $habitants = Habitant::orderBy('nom')->paginate(5);
+        $habitants = Habitant::orderBy('nom')->paginate(15);
         return view('habitants.index', compact('habitants'));
     }
 
@@ -36,10 +42,31 @@ class HabitantController extends Controller {
             'maison_id' => ['required'],
         ]);
 
-        Habitant::create($validatedData);
+        $request->validate([
+            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class],
+            'password' => ['required', 'confirmed', Rules\Password::defaults()],
+        ]);
+
+        DB::transaction(function () use ($request, $validatedData) {
+            $user = User::create([
+                'name' => $request->prenom . ' ' . $request->nom,
+                'email' => $request->email,
+                'password' => Hash::make($request->password),
+            ]);
+
+            $validatedData['user_id'] = $user->id;
+
+            Habitant::create($validatedData);
+
+            event(new Registered($user));
+
+            if(!Auth::check()){
+                Auth::login($user);
+            }
+        });
 
         return redirect()->route('habitants.index')
-                        ->with('success', 'Habitant ajouté avec succès');
+                        ->with('success', 'Habitant enregistré avec succès');
     }
 
     /**

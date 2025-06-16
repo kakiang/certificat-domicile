@@ -17,6 +17,7 @@ class Habitant extends Model {
         'date_naissance',
         'lieu_naissance',
         'maison_id',
+        'user_id',
     ];
 
     protected $casts = [
@@ -29,5 +30,9 @@ class Habitant extends Model {
 
     public function certificats() {
         $this->hasMany(Certificat::class);
+    }
+
+    public function user(){
+        return $this->belongsTo(User::class);
     }
 }

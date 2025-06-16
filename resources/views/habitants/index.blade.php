@@ -16,6 +16,10 @@
                 </th>
                 <th scope="col"
                     class="px-6 py-3 text-left text-xs md:text-sm font-medium text-gray-500 uppercase tracking-wider">
+                    Email
+                </th>
+                <th scope="col"
+                    class="px-6 py-3 text-left text-xs md:text-sm font-medium text-gray-500 uppercase tracking-wider">
                     DATE DE NAISSANCE
                 </th>
                 <th scope="col"
@@ -41,18 +45,16 @@
                                 class="flex-shrink-0 h-10 w-10 rounded-full bg-indigo-100 flex items-center justify-center">
                                 <span class="text-indigo-600 font-medium">{{ substr($habitant->nom, 0, 1) }}</span>
                             </div>
-                            <div class="ml-4 flex gap-1">
-                                <div class="font-medium">
-                                    {{ $habitant->nom }}
-                                </div>
-                                <div class="text-gray-500">
-                                    {{ $habitant->prenom }}
-                                </div>
+                            <div class="ml-4 font-medium">
+                                {{ $habitant->full_name }}
                             </div>
                         </div>
                     </td>
                     <td class="px-6 py-1 whitespace-nowrap">
                         {{ $habitant->telephone }}
+                    </td>
+                    <td class="px-6 py-1 whitespace-nowrap">
+                        {{ $habitant->user?->email }}
                     </td>
                     <td class="px-6 py-1 whitespace-nowrap">
                         {{ $habitant->date_naissance->format('d/m/Y') }}

@@ -16,6 +16,7 @@ class Proprietaire extends Model {
         'telephone',
         'date_naissance',
         'lieu_naissance',
+        'user_id',
     ];
 
     protected $casts = [
@@ -24,5 +25,9 @@ class Proprietaire extends Model {
 
     public function maisons() {
         return $this->hasMany(Maison::class);
+    }
+
+    public function user(){
+        return $this->belongsTo(User::class);
     }
 }

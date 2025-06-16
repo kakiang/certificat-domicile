@@ -5,7 +5,7 @@
         <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
 
             <div class="px-6 py-4 bg-gradient-to-r from-indigo-500 to-blue-500">
-                <h2 class="text-xl font-semibold text-white">Ajouter un propriétaire</h2>
+                <h2 class="text-xl font-semibold text-white">S'inscrire en tant que propriétaire</h2>
             </div>
 
             <form action="{{ route('proprietaires.store') }}" method="POST" class="px-6 py-6">
