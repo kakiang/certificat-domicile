@@ -39,7 +39,7 @@ class CertificatPolicy {
      * Determine whether the user can delete the model.
      */
     public function delete(User $user, Certificat $certificat): bool {
-        return $user->is_admin || ($certificat->habitant && $certificat->habitant->user_id === $user->id);
+        return $user->is_admin;
     }
 
     /**
