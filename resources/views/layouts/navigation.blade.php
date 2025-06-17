@@ -17,22 +17,20 @@
                         <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                             {{ __('Accueil') }}
                         </x-nav-link>
-
-                        <x-nav-link :href="route('proprietaires.index')" :active="request()->routeIs('proprietaires.*')">
-                            {{ __('Proprietaires') }}
-                        </x-nav-link>
-
                         <x-nav-link :href="route('quartiers.index')" :active="request()->routeIs('quartiers.*')">
                             {{ __('Quartiers') }}
                         </x-nav-link>
-
                         <x-nav-link :href="route('maisons.index')" :active="request()->routeIs('maisons.*')">
                             {{ __('Maisons') }}
                         </x-nav-link>
-
-                        <x-nav-link :href="route('habitants.index')" :active="request()->routeIs('habitants.*')">
-                            {{ __('Habitants') }}
+                        <x-nav-link :href="route('proprietaires.index')" :active="request()->routeIs('proprietaires.*')">
+                            {{ __('Proprietaires') }}
                         </x-nav-link>
+                        @can('viewAny', App\Models\Habitant::class)
+                            <x-nav-link :href="route('habitants.index')" :active="request()->routeIs('habitants.*')">
+                                {{ __('Habitants') }}
+                            </x-nav-link>
+                        @endcan
                         @can('viewAny', App\Models\Certificat::class)
                             <x-dropdown-nav-menu :active="request()->routeIs('certificats.*')">
                                 {{ __('Certificats') }}
@@ -49,14 +47,14 @@
                     </div>
                 @else
                     <div class="hidden sm:-my-px sm:ms-10 sm:flex">
-                        <x-nav-link :href="route('proprietaires.create')" :active="request()->routeIs('proprietaires.create')">
-                            {{ __('Proprietaires') }}
-                        </x-nav-link>
                         <x-nav-link :href="route('quartiers.index')" :active="request()->routeIs('quartiers.index')">
                             {{ __('Quartiers') }}
                         </x-nav-link>
                         <x-nav-link :href="route('maisons.index')" :active="request()->routeIs('maisons.index')">
                             {{ __('Maisons') }}
+                        </x-nav-link>
+                        <x-nav-link :href="route('proprietaires.create')" :active="request()->routeIs('proprietaires.create')">
+                            {{ __('Proprietaires') }}
                         </x-nav-link>
                         <x-nav-link :href="route('habitants.create')" :active="request()->routeIs('habitants.create')">
                             {{ __('Habitants') }}

@@ -14,10 +14,22 @@ use Illuminate\Validation\Rules;
 
 class HabitantController extends Controller {
     /**
+     * Constructor
+     */
+    public function __construct() {
+        $this->authorizeResource(Habitant::class, 'habitant');
+    }
+
+    /**
      * Display a listing of the resource.
      */
     public function index() {
-        $habitants = Habitant::forCurrentUser()->orderBy('nom')->paginate(15);
+        $query = Habitant::forCurrentUser()->orderBy('nom');
+        $habitants = $query->get();
+        if ($habitants->count() === 1) {
+            return view('habitants.show', ['habitant' => $habitants->first()]);
+        }
+        $habitants = $query->paginate(15);
         return view('habitants.index', compact('habitants'));
     }
 
@@ -73,7 +85,7 @@ class HabitantController extends Controller {
      * Display the specified resource.
      */
     public function show(Habitant $habitant) {
-        //
+        return view('habitants.show', $habitant);
     }
 
     /**
