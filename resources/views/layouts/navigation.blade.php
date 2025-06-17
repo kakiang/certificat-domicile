@@ -33,10 +33,19 @@
                         <x-nav-link :href="route('habitants.index')" :active="request()->routeIs('habitants.*')">
                             {{ __('Habitants') }}
                         </x-nav-link>
-
-                        <x-nav-link :href="route('certificats.index')" :active="request()->routeIs('certificats.*')">
-                            {{ __('Certificats') }}
-                        </x-nav-link>
+                        @can('viewAny', App\Models\Certificat::class)
+                            <x-dropdown-nav-menu :active="request()->routeIs('certificats.*')">
+                                {{ __('Certificats') }}
+                                <x-slot name="dropdown">
+                                    <a href="{{ route('certificats.index') }}"
+                                        class="block px-4 py-2 text-blue-700 font-medium hover:bg-gray-100">Mes demandes</a>
+                                    @can('create', App\Models\Certificat::class)
+                                        <a href="{{ route('certificats.create') }}"
+                                            class="block px-4 py-2 text-blue-700 font-medium hover:bg-gray-100">Nouvelle demande</a>
+                                    @endcan
+                                </x-slot>
+                            </x-dropdown-nav-menu>
+                        @endcan
                     </div>
                 @else
                     <div class="hidden sm:-my-px sm:ms-10 sm:flex">
@@ -58,8 +67,8 @@
             </div>
             @guest
                 <div class="hidden sm:flex sm:items-center sm:ms-6">
-                   <a href="{{ route('login') }}"
-                                class="nav-link px-4 py-2 rounded transition-all hover:bg-blue-500/20">Login</a>
+                    <a href="{{ route('login') }}"
+                        class="nav-link px-4 py-2 rounded transition-all hover:bg-blue-500/20">Login</a>
 
                 </div>
             @endguest
