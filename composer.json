@@ -16,7 +16,7 @@
     "require-dev": {
         "fakerphp/faker": "^1.23",
         "laravel/breeze": "^2.3",
-        "laravel/pail": "^1.2.2",
+        "laravel/pail": "^1.2",
         "laravel/pint": "^1.13",
         "laravel/sail": "^1.41",
         "mockery/mockery": "^1.6",
@@ -54,7 +54,7 @@
         ],
         "dev": [
             "Composer\\Config::disableProcessTimeout",
-            "npx concurrently -c \"#93c5fd,#fb7185,#fdba74\" \"php artisan serve\" \"php artisan pail --timeout=0\" \"npm run dev\" --names=server,logs,vite"
+            "npx concurrently -c \"#93c5fd,#fb7185,#fdba74\" \"php artisan serve\" \"php artisan pail -v --timeout=0\" \"npm run dev\" --names=server,logs,vite"
         ],
         "dev-all": [
             "Composer\\Config::disableProcessTimeout",
