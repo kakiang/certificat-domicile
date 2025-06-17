@@ -58,8 +58,13 @@
                     </td>
                     <td class="px-6 py-1 whitespace-nowrap text-right text-sm font-medium">
                         <div class="flex justify-end space-x-3">
+                            @can('view', $certificat)
                             <x-show-link href="{{ route('certificats.show', $certificat) }}" />
+                            @endcan
+                            @can('update', $certificat)
                             <x-edit-link href="{{ route('certificats.edit', $certificat) }}" />
+                            @endcan
+                            @can('delete', $certificat)
                             <form action="{{ route('certificats.destroy', $certificat) }}" method="POST" class="inline">
                                 @csrf
                                 @method('DELETE')
@@ -72,6 +77,7 @@
                                     </svg>
                                 </button>
                             </form>
+                            @endcan
                         </div>
                     </td>
                 </tr>
