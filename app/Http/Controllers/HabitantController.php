@@ -17,7 +17,7 @@ class HabitantController extends Controller {
      * Display a listing of the resource.
      */
     public function index() {
-        $habitants = Habitant::orderBy('nom')->paginate(15);
+        $habitants = Habitant::forCurrentUser()->orderBy('nom')->paginate(15);
         return view('habitants.index', compact('habitants'));
     }
 
@@ -60,7 +60,7 @@ class HabitantController extends Controller {
 
             event(new Registered($user));
 
-            if(!Auth::check()){
+            if (!Auth::check()) {
                 Auth::login($user);
             }
         });

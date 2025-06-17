@@ -35,7 +35,7 @@ class CertificatController extends Controller {
      * Show the form for creating a new resource.
      */
     public function create() {
-        $habitants = Habitant::orderBy('nom')->get();
+        $habitants = Habitant::forCurrentUser()->orderBy('nom')->get();
         return view('certificats.create', compact('habitants'));
     }
 
