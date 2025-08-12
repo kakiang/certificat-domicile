@@ -27,7 +27,8 @@ class HabitantController extends Controller {
     public function index() {
         $query = Habitant::forCurrentUser()->orderBy('nom');
         $habitants = $query->get();
-        if ($habitants->count() === 1) {
+        
+        if ($habitants->count() === 1 && !Auth::user()->is_admin) {
             return view('habitants.show', ['habitant' => $habitants->first()]);
         }
         $habitants = $query->paginate(15);

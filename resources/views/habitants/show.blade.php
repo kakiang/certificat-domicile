@@ -71,6 +71,7 @@
 
             </div>
 
+            @if (Auth::user()->is_admin)
             <div class="flex items-center justify-end space-x-4 px-6 py-6 bg-gray-50 border-t border-gray-200">
                 {{-- @can('delete', $habitant)
                     <form action="{{ route('habitants.destroy', $habitant) }}" method="POST"
@@ -83,13 +84,14 @@
                         </button>
                     </form>
                 @endcan --}}
-                @if (Auth::user()->is_admin)
+                
                     <a href="{{ route('habitants.index') }}"
                         class="px-5 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition duration-200">
                         Retour à la liste
                     </a>
-                @endif
+                
             </div>
+            @endif
         </div>
     </div>
 </x-app-layout>

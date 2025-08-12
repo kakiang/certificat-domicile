@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'Certificat Domicile') }}</title>
+    <title>{{ config('app.name', 'Certificat Domi') }}</title>
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -17,44 +17,42 @@
 
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-    <link href="https://fonts.bunny.net/css?family=caveat-brush:400" rel="stylesheet" />
+     <link href="https://fonts.bunny.net/css?family=caveat-brush:400" rel="stylesheet" />
 
     <style>
         body {
             font-family: 'Inter', sans-serif;
         }
-
         .caveat-brush {
             font-family: 'Caveat Brush', handwriting;
         }
     </style>
 </head>
 
-<body class="bg-gray-50 text-gray-800 antialiased">
-    <!-- Main container -->
-    <div class="min-h-screen flex flex-col">
-
-        <!-- Navigation Bar -->
+<body class="font-sans antialiased">
+    <div class="min-h-screen bg-gray-100">
         @include('layouts.navigation')
-        <!-- Main Content -->
-        <main class="flex-grow">
-            {{ $slot }}
-        </main>
 
-        <!-- Footer -->
-        <footer class="bg-white border-t border-gray-200 py-8 mt-12">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-                <p class="text-sm text-gray-500">&copy; 2023 DomiCert. Tous droits réservés.</p>
-            </div>
-        </footer>
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            @isset($header)
+                <header>
+                    <div class="my-8">
+                        {{ $header }}
+                    </div>
+                </header>
+            @endisset
+
+            @include('layouts.session-message')
+
+            <main>
+                {{-- <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg"> --}}
+                <div>
+                    {{ $slot }}
+                </div>
+            </main>
+        </div>
 
     </div>
-
-    <!-- Alpine.js for dropdown/mobile menu functionality -->
-     <script type="module">
-        import Alpine from 'https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/module.esm.js';
-        Alpine.start();
-    </script>
     @isset($scripts)
     {{ $scripts }}
     @endisset

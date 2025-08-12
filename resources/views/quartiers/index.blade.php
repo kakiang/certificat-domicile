@@ -1,46 +1,45 @@
 <x-app-layout>
-      <x-table-card>
+    <x-table-card>
         <x-slot:title>Liste des quartiers</x-slot:title>
         <x-slot:addlink>
-            <x-add-link href="{{ route('quartiers.create') }}">Ajouter une quartier</x-add-link>
+            <x-add-link href="{{ route('quartiers.create') }}">Ajouter un quartier</x-add-link>
         </x-slot:addlink>
         <x-slot:theadcontent>
             <tr>
                 <th scope="col"
-                    class="px-6 py-3 text-left text-xs md:text-sm font-medium text-gray-500 uppercase tracking-wider">
+                    class="px-6 py-3 text-left md:text-sm font-bold uppercase tracking-wider rounded-tl-lg">
+                    #
+                </th>
+                <th scope="col"
+                    class="px-6 py-3 text-left md:text-sm font-bold uppercase tracking-wider rounded-tl-lg">
                     Nom du quartier
                 </th>
                 <th scope="col"
-                    class="px-6 py-3 text-left text-xs md:text-sm font-medium text-gray-500 uppercase tracking-wider">
+                    class="px-6 py-3 text-left md:text-sm font-bold uppercase tracking-wider">
                     Description
                 </th>
                 <th scope="col"
-                    class="px-6 py-3 text-right text-xs md:text-sm font-medium text-gray-500 uppercase tracking-wider">
+                    class="px-6 py-3 text-right md:text-sm font-bold uppercase tracking-wider rounded-tr-lg">
                     Actions
                 </th>
             </tr>
+
         </x-slot:theadcontent>
         <x-slot:tbodycontent>
             @forelse($quartiers as $quartier)
-                <tr class="hover:bg-gray-50 transition duration-150">
-                    <td class="px-6 py-2 whitespace-nowrap">
-                        <div class="flex items-center">
-                            <div class="flex gap-4">
-                                <div class="text-gray-500">
-                                    {{ $loop->iteration }}
-                                </div>
-                                <di>
-                                    {{ $quartier->nom }}
-                                </di>
-                            </div>
-                        </div>
-                        
+                <tr>
+
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        {{ $loop->iteration }}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        {{ $quartier->nom }}
                     </td>
                     <td class="px-6 py-2 whitespace-nowrap">
                         {{ $quartier->description }}
                     </td>
                     <td class="px-6 py-2 whitespace-nowrap text-right text-sm font-medium">
-                        <div class="flex justify-end space-x-3">
+                        <div class="flex justify-end space-x-4">
                             <x-show-link href="{{ route('quartiers.show', $quartier) }}" />
                             <x-edit-link href="{{ route('quartiers.edit', $quartier) }}" />
                             <form action="{{ route('quartiers.destroy', $quartier) }}" method="POST" class="inline">

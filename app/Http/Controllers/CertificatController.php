@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Certificat;
 use App\Models\Habitant;
+use App\Models\Maison;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
@@ -35,7 +37,18 @@ class CertificatController extends Controller {
      * Show the form for creating a new resource.
      */
     public function create() {
+        if (!Auth::check()) {
+            return redirect()->route('habitants.create')
+            ->with('message', 'Please register as a Habitant first or log in.');
+        }
+
         $habitants = Habitant::forCurrentUser()->orderBy('nom')->get();
+        
+        if ($habitants->isEmpty()) {
+            return redirect()->route('habitants.create')
+                ->with('message', 'You need to create a Habitant profile first.');
+        }
+
         return view('certificats.create', compact('habitants'));
     }
 

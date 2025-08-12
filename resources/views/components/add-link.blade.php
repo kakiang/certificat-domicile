@@ -1,16 +1,6 @@
-{{-- <a {{ $attributes->merge(['class' => "font-medium inline-flex items-center px-4 py-2.5 bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 text-white rounded-lg shadow hover:shadow-md transition-all duration-200 transform hover:-translate-y-0.5"]) }}>
-   <svg class="w-5 h-5 mr-2 -ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-    </svg>
-    {{ $slot }}
-</a> --}}
-
 <a
-    {{ $attributes->merge(['class' => 'flex items-center px-4 py-2 bg-white text-indigo-600 rounded-md hover:bg-gray-50 transition duration-200 shadow-sm', 'title' => 'Edit']) }}">
-    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
-        <path fill-rule="evenodd"
-            d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z"
-            clip-rule="evenodd" />
-    </svg>
+    {{ $attributes->merge(['class' => 'mt-4 sm:mt-0 inline-flex items-center px-6 py-3 border border-transparent font-medium rounded-full shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors duration-200', 'title' => 'Edit']) }}">
+    <i class="fa-solid fa-plus-circle mr-2"></i>
     {{ $slot }}
 </a>
+

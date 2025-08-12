@@ -1,12 +1,12 @@
 <x-app-layout>
 
-    <div class="max-w-4xl mx-auto py-4">
+    <div class="max-w-4xl mx-auto py-12 sm:py-8">
 
         <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
 
             <div class="px-6 py-4 bg-gradient-to-r from-indigo-500 to-blue-500">
                 <h2 class="text-xl font-semibold text-white">
-                    Faire une demande de certificat
+                     Nouvelle demande de certificat
                 </h2>
             </div>
 
@@ -32,7 +32,7 @@
                     <x-input-error :messages="$errors->get('habitant_id')" />
                 </div>
 
-                <div class="mt-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div class="my-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                     <div>
                         <x-input-label for="nom" :value="__('Nom & Prénoms')" />
                         <x-text-input id="nom" name="nom" disabled class="bg-gray-100 w-full" />
@@ -59,57 +59,60 @@
                     </div>
 
                 </div>
+                <div class="space-y-4 pt-6 border-t border-gray-200">
+                    <h2 class="text-lg font-semibold text-gray-900">Documents à fournir</h2>
 
-                <h2 class="text-xl font-semibold text-gray-800 mt-8 mb-4 pb-2 leading-tight">
-                    Documents à fournir
-                </h2>
-
-                <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4 items-center">
-                    <div>
-                        <x-input-label for="piece_identite" :value="__('Type pièce d\'identité')" class="sr-only" />
-                        <x-select-input name="piece_identite" id="piece_identite" class="w-full">
-                            <option value="" disabled selected hidden class="text-gray-400">Pièce d'identité</option>
-                            <option value="CNI">Carte d'identité</option>
-                            <option value="Passeport">Passeport</option>
-                            <option value="Autre">Autre</option>
-                        </x-select-input>
+                    <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4 items-center">
+                        <div>
+                            <x-input-label for="piece_identite" :value="__('Type pièce d\'identité')" class="sr-only" />
+                            <x-select-input name="piece_identite" id="piece_identite" class="w-full">
+                                <option value="" disabled selected hidden class="text-gray-400">Pièce d'identité
+                                </option>
+                                <option value="CNI">Carte d'identité</option>
+                                <option value="Passeport">Passeport</option>
+                                <option value="Autre">Autre</option>
+                            </x-select-input>
+                        </div>
+                        <div>
+                            <x-input-label for="piece_identite_file_path" :value="__('Fichier pièce d\'identité')" class="sr-only" />
+                            <input type="file" id="piece_identite_file_path" name="piece_identite_file_path"
+                                class="block w-full text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none file:mr-4 file:py-2.5 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100" />
+                            <x-input-error :messages="$errors->get('piece_identite_file_path')" class="mt-2" />
+                        </div>
                     </div>
-                    <div>
-                        <x-input-label for="piece_identite_file_path" :value="__('Fichier pièce d\'identité')" class="sr-only" />
-                        <input type="file" id="piece_identite_file_path" name="piece_identite_file_path"
-                            class="block w-full text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none file:mr-4 file:py-2.5 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100" />
-                        <x-input-error :messages="$errors->get('piece_identite_file_path')" class="mt-2" />
+
+                    <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4 items-center">
+                        <div>
+                            <x-input-label for="justificatif_domicile" :value="__('Type justificatif de domicile')" class="sr-only" />
+                            <x-select-input name="justificatif_domicile" id="justificatif_domicile" class="w-full">
+                                <option value="" disabled selected hidden class="text-gray-400">Justificatif
+                                    domicile</option>
+                                <option value="FACTURE_ELECTRICITE">facture d'électricité</option>
+                                <option value="FACTURE_EAU">facture d'eau</option>
+                                <option value="FACTURE_TEL">facture de téléphone</option>
+                                <option value="Autre">Autre</option>
+                            </x-select-input>
+                        </div>
+                        <div>
+                            <x-input-label for="justificatif_domicile_file_path" :value="__('Fichier justificatif de domicile')" class="sr-only" />
+                            <input type="file" id="justificatif_domicile_file_path"
+                                name="justificatif_domicile_file_path"
+                                class="block w-full text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none file:mr-4 file:py-2.5 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100" />
+                            <x-input-error :messages="$errors->get('justificatif_domicile_file_path')" class="mt-2" />
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-end space-x-4 border-t border-gray-100 pt-6 mt-6">
+                        <a href="{{ route('certificats.index') }}"
+                            class="px-5 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition duration-200">
+                            Annuler
+                        </a>
+                        <x-primary-button>
+                            {{ __('Enregistrer') }}
+                        </x-primary-button>
                     </div>
                 </div>
 
-                 <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4 items-center">
-                    <div>
-                        <x-input-label for="justificatif_domicile" :value="__('Type justificatif de domicile')" class="sr-only" />
-                        <x-select-input name="justificatif_domicile" id="justificatif_domicile" class="w-full">
-                            <option value="" disabled selected hidden class="text-gray-400">Justificatif domicile</option>
-                            <option value="FACTURE_ELECTRICITE">facture d'électricité</option>
-                            <option value="FACTURE_EAU">facture d'eau</option>
-                            <option value="FACTURE_TEL">facture de téléphone</option>
-                            <option value="Autre">Autre</option>
-                        </x-select-input>
-                    </div>
-                    <div>
-                        <x-input-label for="justificatif_domicile_file_path" :value="__('Fichier justificatif de domicile')" class="sr-only" />
-                        <input type="file" id="justificatif_domicile_file_path" name="justificatif_domicile_file_path"
-                            class="block w-full text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none file:mr-4 file:py-2.5 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100" />
-                        <x-input-error :messages="$errors->get('justificatif_domicile_file_path')" class="mt-2" />
-                    </div>
-                </div>
-
-                <div class="flex items-center justify-end space-x-4 border-t border-gray-100 pt-6 mt-6">
-                    <a href="{{ route('certificats.index') }}"
-                        class="px-5 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition duration-200">
-                        Annuler
-                    </a>
-                    <x-primary-button>
-                        {{ __('Enregistrer') }}
-                    </x-primary-button>
-                </div>
             </form>
         </div>
     </div>

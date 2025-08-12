@@ -24,8 +24,10 @@ class CertificatPolicy {
     /**
      * Determine whether the user can create models.
      */
-    public function create(User $user): bool {
-        return $user->is_admin || ($user->habitant()->exists());
+    public function create(?User $user): bool {
+        // if (!$user || !$user->habitant()->exists()) return true;
+        // return $user->is_admin || ($user->habitant()->exists());
+        return true;
     }
 
     /**

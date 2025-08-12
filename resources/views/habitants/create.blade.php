@@ -1,11 +1,11 @@
 <x-app-layout>
 
-    <div class="max-w-4xl mx-auto py-4">
+    <div class="max-w-4xl mx-auto py-12 sm:py-8">
 
         <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
 
             <div class="px-6 py-4 bg-gradient-to-r from-indigo-500 to-blue-500">
-                <h2 class="text-xl font-semibold text-white">S'inscrire en tant que habitant</h2>
+                <h2 class="text-xl font-semibold text-white">Créer mon compte résident</h2>
             </div>
 
             <form method="POST" action="{{ route('habitants.store') }}" class="px-6 py-6">

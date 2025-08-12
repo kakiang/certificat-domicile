@@ -1,109 +1,4 @@
-<x-app-layout>
-    <div>
-        <!-- Hero Section -->
-        <div
-            class="relative overflow-hidden pt-12 pb-24 bg-gradient-to-br from-indigo-500 to-blue-600 sm:pt-24 sm:pb-32 rounded-b-3xl">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
-                <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-white leading-tight">
-                    Votre certificat de domicile, <br> simple et rapide.
-                </h1>
-                <p class="mt-6 text-lg sm:text-xl text-indigo-100 max-w-2xl mx-auto">
-                    Demandez et obtenez votre certificat de domicile en ligne en quelques clics, sans tracas.
-                </p>
-                <div class="mt-10 flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4">
-                    <a href="{{ route('certificats.create') }}"
-                        class="inline-flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-full shadow-lg text-indigo-600 bg-white hover:bg-gray-100 transition-colors duration-200">
-                        Faire une demande
-                    </a>
-                    <a href="#"
-                        class="inline-flex items-center justify-center px-8 py-3 border border-white text-base font-medium rounded-full shadow-lg text-white hover:bg-white/10 transition-colors duration-200">
-                        En savoir plus
-                    </a>
-                </div>
-            </div>
-        </div>
-
-        <!-- Session Messages (Modernized) -->
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-6 space-y-3">
-            <!-- Example of a Success Message -->
-            <!-- You would use a Blade conditional here like if (session('success')) -->
-            <div class="relative px-4 py-3 bg-green-50 text-green-700 rounded-lg shadow-md border border-green-200"
-                role="alert">
-                <div class="flex items-center">
-                    <div class="flex-shrink-0">
-                        <i class="fa-solid fa-circle-check text-green-500"></i>
-                    </div>
-                    <div class="ml-3 font-medium text-sm">
-                        Votre demande a été soumise avec succès !
-                    </div>
-                </div>
-            </div>
-            <!-- Example of an Error Message -->
-            <!-- You would use a Blade conditional here like if (session('error')) -->
-            <div class="relative px-4 py-3 bg-red-50 text-red-700 rounded-lg shadow-md border border-red-200"
-                role="alert">
-                <div class="flex items-center">
-                    <div class="flex-shrink-0">
-                        <i class="fa-solid fa-circle-xmark text-red-500"></i>
-                    </div>
-                    <div class="ml-3 font-medium text-sm">
-                        Une erreur est survenue lors de l'envoi de votre demande.
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Features Section -->
-        <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
-            <div class="text-center">
-                <h2 class="text-3xl sm:text-4xl font-bold text-gray-900">Fonctionnalités clés</h2>
-                <p class="mt-4 text-lg text-gray-500 max-w-2xl mx-auto">
-                    Notre plateforme est conçue pour simplifier la vie des citoyens et des administrations.
-                </p>
-            </div>
-            <div class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-8">
-                <!-- Feature Card 1 -->
-                <div
-                    class="p-8 bg-white rounded-2xl shadow-lg border border-gray-100 flex flex-col items-center text-center transition-all duration-300 hover:shadow-xl hover:scale-105">
-                    <div class="w-12 h-12 flex items-center justify-center bg-indigo-50 text-indigo-600 rounded-full">
-                        <i class="fa-solid fa-file-circle-plus text-xl"></i>
-                    </div>
-                    <h3 class="mt-6 text-xl font-semibold text-gray-900">Demande en ligne</h3>
-                    <p class="mt-3 text-base text-gray-500">
-                        Soumettez votre demande de certificat de domicile 24/7 depuis n'importe quel appareil.
-                    </p>
-                </div>
-                <!-- Feature Card 2 -->
-                <div
-                    class="p-8 bg-white rounded-2xl shadow-lg border border-gray-100 flex flex-col items-center text-center transition-all duration-300 hover:shadow-xl hover:scale-105">
-                    <div class="w-12 h-12 flex items-center justify-center bg-blue-50 text-blue-600 rounded-full">
-                        <i class="fa-solid fa-magnifying-glass-chart text-xl"></i>
-                    </div>
-                    <h3 class="mt-6 text-xl font-semibold text-gray-900">Suivi en temps réel</h3>
-                    <p class="mt-3 text-base text-gray-500">
-                        Recevez des notifications et suivez l'état de votre demande à chaque étape du processus.
-                    </p>
-                </div>
-                <!-- Feature Card 3 -->
-                <div
-                    class="p-8 bg-white rounded-2xl shadow-lg border border-gray-100 flex flex-col items-center text-center transition-all duration-300 hover:shadow-xl hover:scale-105">
-                    <div class="w-12 h-12 flex items-center justify-center bg-green-50 text-green-600 rounded-full">
-                        <i class="fa-solid fa-stamp text-xl"></i>
-                    </div>
-                    <h3 class="mt-6 text-xl font-semibold text-gray-900">Certificats sécurisés</h3>
-                    <p class="mt-3 text-base text-gray-500">
-                        Recevez un certificat numérique authentifié et sécurisé, prêt à être utilisé.
-                    </p>
-                </div>
-            </div>
-        </section>
-    </div>
-
-
-</x-app-layout>
-
-
-{{-- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="utf-8">
@@ -273,7 +168,7 @@
                                         </label>
                                         <p class="pl-1">ou glissez-déposez ici</p>
                                     </div>
-                                    <p class="text-xs text-gray-500">PNG, JPG, PDF jusqu'à 10MB</p>
+                                    <p class="text-xs text-gray-500">PNG, JPG, PDF jusqu'à 5MB</p>
                                 </div>
                             </div>
                         </div>
@@ -291,7 +186,7 @@
                                         </label>
                                         <p class="pl-1">ou glissez-déposez ici</p>
                                     </div>
-                                    <p class="text-xs text-gray-500">PNG, JPG, PDF jusqu'à 10MB</p>
+                                    <p class="text-xs text-gray-500">PNG, JPG, PDF jusqu'à 5MB</p>
                                 </div>
                             </div>
                         </div>
@@ -316,4 +211,4 @@
         </footer>
     </div>
 </body>
-</html> --}}
+</html>

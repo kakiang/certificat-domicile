@@ -7,23 +7,23 @@
         <x-slot:theadcontent>
             <tr>
                 <th scope="col"
-                    class="px-6 py-3 text-left text-xs md:text-sm font-medium text-gray-500 uppercase tracking-wider">
+                    class="px-6 py-3 text-left md:text-sm font-bold uppercase tracking-wider">
                     Quartier
                 </th>
                 <th scope="col"
-                    class="px-6 py-3 text-left text-xs md:text-sm font-medium text-gray-500 uppercase tracking-wider">
+                    class="px-6 py-3 text-left md:text-sm font-bold uppercase tracking-wider">
                     Numero de maison
                 </th>
                 <th scope="col"
-                    class="px-6 py-3 text-left text-xs md:text-sm font-medium text-gray-500 uppercase tracking-wider">
+                    class="px-6 py-3 text-left md:text-sm font-bold uppercase tracking-wider">
                     Propriétaire
                 </th>
                 <th scope="col"
-                    class="px-6 py-3 text-left text-xs md:text-sm font-medium text-gray-500 uppercase tracking-wider">
+                    class="px-6 py-3 text-left md:text-sm font-bold uppercase tracking-wider">
                     Description
                 </th>
                 <th scope="col"
-                    class="px-6 py-3 text-right text-xs md:text-sm font-medium text-gray-500 uppercase tracking-wider">
+                    class="px-6 py-3 text-right md:text-sm font-bold uppercase tracking-wider">
                     Actions
                 </th>
             </tr>
