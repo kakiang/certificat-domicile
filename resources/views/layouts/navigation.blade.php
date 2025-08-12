@@ -1,4 +1,4 @@
- <nav x-data="{ open: false }" class="bg-white/80 backdrop-blur-md sticky top-0 z-50 shadow-sm">
+ <nav x-data="{ open: false }" class="bg-white/90 backdrop-blur-md sticky top-0 z-50 shadow-sm">
      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
          <div class="flex justify-between h-16">
              <!-- Logo and Brand Name -->

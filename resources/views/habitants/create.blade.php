@@ -1,11 +1,14 @@
 <x-app-layout>
+   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
+        <div class="bg-white p-6 sm:p-8 rounded-3xl shadow-md border border-gray-100">
 
-    <div class="max-w-4xl mx-auto py-12 sm:py-8">
-
-        <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-
-            <div class="px-6 py-4 bg-gradient-to-r from-indigo-500 to-blue-500">
-                <h2 class="text-xl font-semibold text-white">Créer mon compte résident</h2>
+            <div class="pb-6 border-b border-gray-200">
+                <h1 class="text-3xl font-bold text-gray-900">
+                    Créer un compte habitant
+                </h1>
+                <p class="mt-2 text-gray-500">
+                    Remplissez les informations ci-dessous pour créer votre compte habitant
+                </p>
             </div>
 
             <form method="POST" action="{{ route('habitants.store') }}" class="px-6 py-6">
@@ -99,6 +102,7 @@
                     </x-primary-button>
                 </div>
             </form>
+            
         </div>
     </div>
 </x-app-layout>

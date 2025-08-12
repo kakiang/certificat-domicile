@@ -44,17 +44,12 @@
         <!-- Footer -->
         <footer class="bg-white border-t border-gray-200 py-8 mt-12">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-                <p class="text-sm text-gray-500">&copy; 2023 DomiCert. Tous droits réservés.</p>
+                <p class="text-sm text-gray-500">&copy; 2025 DomiCert. Tous droits réservés.</p>
             </div>
         </footer>
 
     </div>
 
-    <!-- Alpine.js for dropdown/mobile menu functionality -->
-     <script type="module">
-        import Alpine from 'https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/module.esm.js';
-        Alpine.start();
-    </script>
     @isset($scripts)
     {{ $scripts }}
     @endisset
