@@ -27,7 +27,8 @@ Route::middleware('auth')->group(function () {
     Route::resource('quartiers', QuartierController::class)->except(['index']);
     Route::resource('maisons', MaisonController::class)->except(['index']);
     Route::resource('habitants', HabitantController::class)->except(['create', 'store']);
-    Route::resource('certificats', CertificatController::class)->only(['store', 'show', 'edit' ,'index', 'destroy']);
+    Route::resource('certificats', CertificatController::class)->except(['create']);
+    Route::put('/certificats/{certificat}', [CertificatController::class, 'update_status'])->name('certificats.update_status');
 });
 
 require __DIR__ . '/auth.php';

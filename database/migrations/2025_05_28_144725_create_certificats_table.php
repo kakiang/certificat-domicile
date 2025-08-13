@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('certificats', function (Blueprint $table) {
             $table->id();
+            $table->string('numero_certificat')->unique()->nullable();
             $table->dateTime('date_demande')->useCurrent();
             $table->date('date_delivrance')->nullable();
             $table->foreignId('habitant_id')->constrained();
@@ -22,6 +23,8 @@ return new class extends Migration
             $table->string('justificatif_domicile')->nullable();
             $table->string('justificatif_domicile_file_path')->nullable();
             $table->string('justificatif_domicile_slug')->nullable();
+            $table->enum('status', ['En attente', 'En cours de traitement', 'Incomplète', 'Délivré', 'Rejété'])->default('En attente');
+            $table->text('observation')->nullable();
             $table->timestamps();
         });
     }

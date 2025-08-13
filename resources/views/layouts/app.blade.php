@@ -36,6 +36,8 @@
 
         <!-- Navigation Bar -->
         @include('layouts.navigation')
+
+        @include('layouts.sessionmessage')
         <!-- Main Content -->
         <main class="flex-grow">
             {{ $slot }}
@@ -50,9 +52,20 @@
 
     </div>
 
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const sessionMessageContainer = document.getElementById('seesionmessage');
+            if (sessionMessageContainer) {
+                setTimeout(() => {
+                    sessionMessageContainer.style.display = 'none';
+                }, 10000);
+            }
+        });
+    </script>
     @isset($scripts)
-    {{ $scripts }}
+        {{ $scripts }}
     @endisset
+    
 </body>
 
 </html>

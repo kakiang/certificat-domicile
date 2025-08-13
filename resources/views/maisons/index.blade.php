@@ -40,8 +40,8 @@
                     <td class="px-6 py-1 whitespace-nowrap">
                         {{ $maison->proprietaire->full_name }}
                     </td>
-                    <td class="px-6 py-1 whitespace-nowrap">
-                        {{ $maison->description }}
+                    <td class="px-6 py-1 whitespace-nowrapax-w-xs truncate" title="{{ $maison->description }}">
+                        {{ Str::limit($maison->description, 120) }}
                     </td>
                     <td class="px-6 py-1 whitespace-nowrap text-right text-sm font-medium">
                         <div class="flex justify-end space-x-3">

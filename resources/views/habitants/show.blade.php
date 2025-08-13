@@ -1,6 +1,6 @@
 <x-app-layout>
     <!-- Le conteneur principal `div` est mis à jour pour correspondre au design de la page "Demandes" -->
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
         <!-- La carte de détails utilise le même style moderne avec des coins arrondis et une ombre -->
         <div class="bg-white p-6 sm:p-8 rounded-3xl shadow-xl border border-gray-100">
             

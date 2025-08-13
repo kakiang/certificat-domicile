@@ -1,6 +1,6 @@
 <x-app-layout>
     <!-- Le conteneur principal `div` a été mis à jour pour correspondre au design des autres pages -->
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
         <!-- La carte du formulaire utilise le même style moderne que les autres pages -->
         <div class="bg-white p-6 sm:p-8 rounded-3xl shadow-md border border-gray-100">
 

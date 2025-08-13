@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Certificat extends Model {
     protected $fillable = [
+        'numero_certificat',
         'date_demande',
         'date_delivrance',
         'habitant_id',
@@ -15,6 +16,8 @@ class Certificat extends Model {
         'justificatif_domicile',
         'justificatif_domicile_file_path',
         'justificatif_domicile_slug',
+        'status',
+        'observation',
     ];
 
     protected $casts = [

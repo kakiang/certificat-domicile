@@ -23,36 +23,6 @@
             </div>
         </div>
 
-        <!-- Session Messages (Modernized) -->
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-6 space-y-3">
-            <!-- Example of a Success Message -->
-            <!-- You would use a Blade conditional here like if (session('success')) -->
-            <div class="relative px-4 py-3 bg-green-50 text-green-700 rounded-lg shadow-md border border-green-200"
-                role="alert">
-                <div class="flex items-center">
-                    <div class="flex-shrink-0">
-                        <i class="fa-solid fa-circle-check text-green-500"></i>
-                    </div>
-                    <div class="ml-3 font-medium text-sm">
-                        Votre demande a été soumise avec succès !
-                    </div>
-                </div>
-            </div>
-            <!-- Example of an Error Message -->
-            <!-- You would use a Blade conditional here like if (session('error')) -->
-            <div class="relative px-4 py-3 bg-red-50 text-red-700 rounded-lg shadow-md border border-red-200"
-                role="alert">
-                <div class="flex items-center">
-                    <div class="flex-shrink-0">
-                        <i class="fa-solid fa-circle-xmark text-red-500"></i>
-                    </div>
-                    <div class="ml-3 font-medium text-sm">
-                        Une erreur est survenue lors de l'envoi de votre demande.
-                    </div>
-                </div>
-            </div>
-        </div>
-
         <!-- Features Section -->
         <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
             <div class="text-center">
@@ -198,7 +168,7 @@
         </nav>
 
         <!-- Main Content for New Request Page -->
-        <main class="flex-grow max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
+        <main class="flex-grow max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
             <div class="bg-white p-6 sm:p-8 rounded-3xl shadow-xl border border-gray-100">
                 <!-- Header -->
                 <div class="pb-6 border-b border-gray-200">

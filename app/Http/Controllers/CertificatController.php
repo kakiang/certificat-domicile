@@ -7,8 +7,10 @@ use App\Models\Habitant;
 use App\Models\Maison;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 
 class CertificatController extends Controller {
     /**
@@ -56,7 +58,9 @@ class CertificatController extends Controller {
      * Store a newly created resource in storage.
      */
     public function store(Request $request) {
-        $fileSizeMax = 1025 * 5;
+        Log::info('Début de la méthode store pour CertificatController.');
+        
+        $fileSizeMax = 1024 * 5;
         $validatedData = $request->validate([
             'habitant_id' => 'required|exists:habitants,id',
             'piece_identite' => 'required|string',
@@ -65,11 +69,13 @@ class CertificatController extends Controller {
             'justificatif_domicile_file_path' => 'required|file|mimes:jpeg,png,pdf|max:' . $fileSizeMax,
         ]);
 
+        Log::info('Données validées avec succès.', $validatedData);
+
         if (!auth()->user()->is_admin) {
             $habitantIdOfCurrentUser = auth()->user()->habitant->id ?? null;
             if (!$habitantIdOfCurrentUser || (int)$validatedData['habitant_id'] !== $habitantIdOfCurrentUser) {
                 return redirect()->route('certificats.create')
-                        ->with('error', 'Vous n\'êtes pas autorisé à créer un certificat pour un autre habitant.');
+                        ->with('error', 'Vous n\'êtes pas autorisé à créer une demande de certificat pour un autre habitant.');
             }
         }
 
@@ -89,7 +95,25 @@ class CertificatController extends Controller {
             $validatedData['justificatif_domicile_slug'] = Str::slug(pathinfo($originalFileName, PATHINFO_BASENAME));
         }
 
-        Certificat::create($validatedData);
+        $habitant = Habitant::with('maison.quartier')->findOrFail($validatedData['habitant_id']);
+        Log::info('Informations de l\'habitant récupérées.', ['habitant_id' => $habitant->id]);
+
+        if ($habitant->maison && $habitant->maison->quartier) {
+            $codeQuartier = Str::upper(Str::substr($habitant->maison->quartier->nom, 0, 3));
+            $codeMaison = $habitant->maison->numero;
+            $codeHabitant = $habitant->id;
+            $validatedData['numero_certificat'] = "{$codeQuartier}-{$codeMaison}-{$codeHabitant}";
+                    Log::info('Numéro de certificat généré.', ['numero' => $validatedData['numero_certificat']]);
+        } else {
+            Log::warning('Impossible de générer le numéro de certificat car les informations de la maison ou du quartier sont manquantes.');
+        }
+
+        try {
+            Certificat::create($validatedData);
+            Log::info('Certificat créé avec succès.', ['data' => $validatedData]);
+        } catch (\Exception $e) {
+            Log::error('Erreur lors de la création du certificat.', ['error' => $e->getMessage()]);
+        }
         return redirect()->route('certificats.index')
                         ->with('success', 'Demande certificat enregistré avec succès');
     }
@@ -113,7 +137,7 @@ class CertificatController extends Controller {
      * Update the specified resource in storage.
      */
     public function update(Request $request, Certificat $certificat) {
-        $fileSizeMax = 1025 * 5; // 5MB
+        $fileSizeMax = 1024 * 5; // 5MB
 
         $validatedData = $request->validate([
             'habitant_id' => 'required|exists:habitants,id',
@@ -123,7 +147,6 @@ class CertificatController extends Controller {
             'justificatif_domicile_file_path' => 'nullable|file|mimes:jpeg,png,pdf|max:' . $fileSizeMax, // Nullable pour les fichiers existants
         ]);
 
-        // Logique similaire à `store` pour empêcher les habitants de changer l'habitant_id
         if (!auth()->user()->is_admin) {
             $habitantIdOfCurrentUser = auth()->user()->habitant->id ?? null;
             if (!$habitantIdOfCurrentUser || (int)$validatedData['habitant_id'] !== $habitantIdOfCurrentUser) {
@@ -163,11 +186,24 @@ class CertificatController extends Controller {
             $validatedData['justificatif_domicile_slug'] = $certificat->justificatif_domicile_slug;
         }
 
-        // Mettre à jour le certificat avec les données validées
         $certificat->update($validatedData);
 
         return redirect()->route('certificats.index')
                         ->with('success', 'Demande certificat mise à jour avec succès');
+    }
+
+    public function update_status(Request $request, Certificat $certificat) {
+        Log::info('function update_status');
+        $validatedData = $request->validate([
+            'status' => ['required', Rule::in(['En attente', 'En cours de traitement', 'Incomplète', 'Délivré', 'Rejété'])],
+            'observation' => ['nullable', 'string'],
+        ]);
+        Log::info('Données validées avec succès.', $validatedData);
+        $certificat->update($validatedData);
+
+        Log::info('Certificat mise à jour.');
+        return redirect()->route('certificats.show', $certificat)
+                        ->with('success', 'Le statut du certificat a été mis à jour avec succès.');
     }
 
     /**

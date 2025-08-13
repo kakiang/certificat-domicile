@@ -1,5 +1,5 @@
 <x-app-layout>
-    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
         <div class="bg-white p-6 sm:p-8 rounded-3xl shadow-md border border-gray-100">
 
             <div class="pb-6 border-b border-gray-200">

@@ -35,8 +35,10 @@
                     <td class="px-6 py-4 whitespace-nowrap">
                         {{ $quartier->nom }}
                     </td>
-                    <td class="px-6 py-2 whitespace-nowrap">
-                        {{ $quartier->description }}
+                    <td 
+                        title="{{ $quartier->description }}" 
+                        class="px-6 py-2 truncate max-w-xs md:max-w-md lg:max-w-lg whitespace-normal break-words">
+                         {{ Str::limit($quartier->description, 255) }}
                     </td>
                     <td class="px-6 py-2 whitespace-nowrap text-right text-sm font-medium">
                         <div class="flex justify-end space-x-4">
