@@ -8,7 +8,8 @@ use App\Policies\CertificatPolicy;
 use App\Policies\HabitantPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
-class AuthServiceProvider extends ServiceProvider {
+class AuthServiceProvider extends ServiceProvider
+{
     protected $policies = [
         Certificat::class => CertificatPolicy::class,
         Habitant::class => HabitantPolicy::class,
@@ -17,14 +18,16 @@ class AuthServiceProvider extends ServiceProvider {
     /**
      * Bootstrap services.
      */
-    public function boot(): void {
+    public function boot(): void
+    {
         $this->registerPolicies();
     }
 
     /**
      * Register services.
      */
-    public function register(): void {
+    public function register(): void
+    {
         //
     }
 }

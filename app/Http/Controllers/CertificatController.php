@@ -15,17 +15,19 @@ use Illuminate\Validation\Rule;
 
 use function Spatie\LaravelPdf\Support\pdf;
 
-class CertificatController extends Controller {
+class CertificatController extends Controller
+{
     /**
      * Constructeur pour autoriser automatiquement les actions sur le contrôleur.
      * Cela simplifie la gestion des permissions pour les méthodes CRUD standards.
      */
-    public function __construct() {
+    public function __construct()
+    {
         // Applique les policies pour les méthodes CRUD du controller.
         // Chaque méthode du controller sera automatiquement associée à la méthode correspondante dans CertificatPolicy.
         // Pour 'store', la policy 'create' est appelée avec la classe du modèle.
         // Pour 'index', la policy 'viewAny' est appelée.
-        // Pour 'show', 'edit', 'update', 'destroy', 
+        // Pour 'show', 'edit', 'update', 'destroy',
         // les policies 'view', 'update', 'delete' sont appelées avec l'instance du modèle.
         $this->authorizeResource(Certificat::class, 'certificat');
     }
@@ -33,7 +35,8 @@ class CertificatController extends Controller {
     /**
      * Display a listing of the resource.
      */
-    public function index() {
+    public function index()
+    {
         $certificats = Certificat::forCurrentUser()->paginate(15);
         return view('certificats.index', compact('certificats'));
     }
@@ -41,14 +44,15 @@ class CertificatController extends Controller {
     /**
      * Show the form for creating a new resource.
      */
-    public function create() {
+    public function create()
+    {
         if (!Auth::check()) {
             return redirect()->route('habitants.create')
             ->with('message', 'Please register as a Habitant first or log in.');
         }
 
         $habitants = Habitant::forCurrentUser()->orderBy('nom')->get();
-        
+
         if ($habitants->isEmpty()) {
             return redirect()->route('habitants.create')
                 ->with('message', 'You need to create a Habitant profile first.');
@@ -60,9 +64,10 @@ class CertificatController extends Controller {
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request) {
+    public function store(Request $request)
+    {
         Log::info('Début de la méthode store pour CertificatController.');
-        
+
         $fileSizeMax = 1024 * 5;
         $validatedData = $request->validate([
             'habitant_id' => 'required|exists:habitants,id',
@@ -82,67 +87,79 @@ class CertificatController extends Controller {
             }
         }
 
-        if ($request->hasFile('piece_identite_file_path')) {
-            $file = $request->file('piece_identite_file_path');
-            $validatedData['piece_identite_file_path'] = $file->store('piece_identites');
-
-            $originalFileName = $file->getClientOriginalName();
-            $validatedData['piece_identite_slug'] = Str::slug(pathinfo($originalFileName, PATHINFO_BASENAME));
-        }
-
-        if ($request->hasFile('justificatif_domicile_file_path')) {
-            $file = $request->file('justificatif_domicile_file_path');
-            $validatedData['justificatif_domicile_file_path'] = $file->store('justificatif_domiciles');
-
-            $originalFileName = $file->getClientOriginalName();
-            $validatedData['justificatif_domicile_slug'] = Str::slug(pathinfo($originalFileName, PATHINFO_BASENAME));
-        }
-
-        DB::transaction(function () use ($validatedData) {
-        
-        $certificat = Certificat::create($validatedData);
-
-        $habitant = Habitant::with('maison.quartier')->findOrFail($validatedData['habitant_id']);
-        Log::info('\nInformations de l\'habitant récupérées.', ['habitant_id' => $habitant->id]);
-
-        if ($habitant->maison && $habitant->maison->quartier) {
-            $codeQuartier = Str::upper(Str::substr($habitant->maison->quartier->nom, 0, 3));
-            $codeMaison = $habitant->maison->numero;
-            $codeHabitant = $habitant->id;
-            $numeroCertificat = "{$codeQuartier}-{$codeMaison}-{$codeHabitant}{$certificat->id}";
-                    Log::info('\nNuméro de certificat généré.', ['numero' => $numeroCertificat]);
-            $certificat->numero_certificat = $numeroCertificat;
-        } else {
-            Log::warning('Impossible de générer le numéro de certificat car les informations de la maison ou du quartier sont manquantes.');
-        }
-
         try {
-            
+            DB::beginTransaction();
+
+            $validatedData = $this->handleFileUploads($request, $validatedData);
+
+            $certificat = Certificat::create($validatedData);
+
+            $certificat->numero_certificat = $this->generateCertificatNumber($certificat);
             $certificat->save();
-            Log::info('\nCertificat créé avec succès.', ['data' => $validatedData]);
+
+            DB::commit();
+
+            Log::info('Certificat créé avec succès.', ['certificat_id' => $certificat->id]);
 
             return redirect()->route('certificats.index')
-                        ->with('success', 'Demande certificat enregistré avec succès');
+                ->with('success', 'Demande de certificat enregistrée avec succès.');
+
         } catch (\Exception $e) {
+            DB::rollBack();
             Log::error('Erreur lors de la création du certificat.', ['error' => $e->getMessage()]);
 
             return redirect()->route('certificats.index')
-                        ->with('error', "Une erreur est survenue lors de la création de la demande");
+                ->with('error', "Une erreur est survenue lors de la création de la demande : " . $e->getMessage());
         }
-        });
+    }
+
+    private function handleFileUploads(Request $request, array $validatedData)
+    {
+        // Traitement de la pièce d'identité
+        if ($request->hasFile('piece_identite_file_path')) {
+            $file = $request->file('piece_identite_file_path');
+            $validatedData['piece_identite_file_path'] = $file->store('piece_identites');
+            $validatedData['piece_identite_slug'] = Str::slug(pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME));
+        }
+
+        // Traitement du justificatif de domicile
+        if ($request->hasFile('justificatif_domicile_file_path')) {
+            $file = $request->file('justificatif_domicile_file_path');
+            $validatedData['justificatif_domicile_file_path'] = $file->store('justificatif_domiciles');
+            $validatedData['justificatif_domicile_slug'] = Str::slug(pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME));
+        }
+
+        return $validatedData;
+    }
+
+    private function generateCertificatNumber(Certificat $certificat)
+    {
+        $habitant = $certificat->habitant;
+
+        if ($habitant && $habitant->maison && $habitant->maison->quartier) {
+            $codeQuartier = Str::upper(Str::substr($habitant->maison->quartier->nom, 0, 3));
+            $codeMaison = $habitant->maison->numero;
+            $codeHabitant = $habitant->id;
+            return "{$codeQuartier}-{$codeMaison}-{$codeHabitant}{$certificat->id}";
+        }
+
+        Log::warning('Impossible de générer le numéro de certificat car les informations de la maison ou du quartier sont manquantes.');
+        return null;
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Certificat $certificat) {
+    public function show(Certificat $certificat)
+    {
         return view('certificats.show', compact('certificat'));
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Certificat $certificat) {
+    public function edit(Certificat $certificat)
+    {
         $habitants = Habitant::orderBy('nom')->get();
         return view('certificats.edit', compact('certificat', 'habitants'));
     }
@@ -150,7 +167,8 @@ class CertificatController extends Controller {
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Certificat $certificat) {
+    public function update(Request $request, Certificat $certificat)
+    {
         $fileSizeMax = 1024 * 5; // 5MB
 
         $validatedData = $request->validate([
@@ -164,8 +182,8 @@ class CertificatController extends Controller {
         if (!auth()->user()->is_admin) {
             $habitantIdOfCurrentUser = auth()->user()->habitant->id ?? null;
             if (!$habitantIdOfCurrentUser || (int)$validatedData['habitant_id'] !== $habitantIdOfCurrentUser) {
-                 return redirect()->route('certificats.index')
-                        ->with('error', 'Vous n\'êtes pas autorisé à créer un certificat pour un autre habitant.');
+                return redirect()->route('certificats.index')
+                       ->with('error', 'Vous n\'êtes pas autorisé à créer un certificat pour un autre habitant.');
             }
         }
 
@@ -206,7 +224,8 @@ class CertificatController extends Controller {
                         ->with('success', 'Demande certificat mise à jour avec succès');
     }
 
-    public function update_status(Request $request, Certificat $certificat) {
+    public function update_status(Request $request, Certificat $certificat)
+    {
         Log::info('function update_status');
         $validatedData = $request->validate([
             'status' => ['required', Rule::in(['En attente', 'En cours de traitement', 'Incomplète', 'Délivré', 'Rejété'])],
@@ -223,7 +242,8 @@ class CertificatController extends Controller {
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Certificat $certificat) {
+    public function destroy(Certificat $certificat)
+    {
         // Supprimer les fichiers associés avant de supprimer l'enregistrement du certificat
         if ($certificat->piece_identite_file_path) {
             Storage::delete($certificat->piece_identite_file_path);
@@ -237,7 +257,8 @@ class CertificatController extends Controller {
                         ->with('success', 'Demande certificat supprimé avec succès');
     }
 
-    public function print(Certificat $certificat) {
+    public function print(Certificat $certificat)
+    {
 
         $configData = [
             'nom_commune' => config('commune.nom_commune'),
@@ -251,7 +272,7 @@ class CertificatController extends Controller {
         $signatureSrc = 'data:image/png;base64,' . $signatureData;
 
         return pdf()->view('pdfs.certificat', [
-            'certificat' => $certificat, 
+            'certificat' => $certificat,
             'config' => $configData,
             'signatureSrc' => $signatureSrc
         ])->name('certificat-'.$certificat->numero_certificat.'.pdf');

@@ -4,7 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Certificat extends Model {
+class Certificat extends Model
+{
     protected $fillable = [
         'numero_certificat',
         'date_demande',
@@ -25,11 +26,13 @@ class Certificat extends Model {
         'date_delivrance' => 'date',
     ];
 
-    public function Habitant() {
+    public function Habitant()
+    {
         return $this->belongsTo(Habitant::class);
     }
 
-    public function scopeForCurrentUser($query) {
+    public function scopeForCurrentUser($query)
+    {
         $user = auth()->user();
         if ($user->is_admin) {
             return $query;

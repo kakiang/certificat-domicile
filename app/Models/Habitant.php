@@ -4,9 +4,10 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Habitant extends Model {
-
-    public function getFullNameAttribute(){
+class Habitant extends Model
+{
+    public function getFullNameAttribute()
+    {
         return "{$this->prenom} {$this->nom}";
     }
 
@@ -24,24 +25,28 @@ class Habitant extends Model {
         'date_naissance' => 'date',
     ];
 
-    public function maison() {
+    public function maison()
+    {
         return $this->belongsTo(Maison::class);
     }
 
-    public function certificats() {
+    public function certificats()
+    {
         $this->hasMany(Certificat::class);
     }
 
-    public function user(){
+    public function user()
+    {
         return $this->belongsTo(User::class);
     }
 
-    public function scopeForCurrentUser($query) {
+    public function scopeForCurrentUser($query)
+    {
         $user = auth()->user();
-        if($user->is_admin) {
+        if ($user->is_admin) {
             return $query;
         }
-        if($user->habitant){
+        if ($user->habitant) {
             return $query->where('user_id', $user->id);
         }
         return $query->whereRaw('1=0');

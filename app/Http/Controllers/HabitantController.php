@@ -13,21 +13,24 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 use Illuminate\Support\Facades\Log;
 
-class HabitantController extends Controller {
+class HabitantController extends Controller
+{
     /**
      * Constructor
      */
-    public function __construct() {
+    public function __construct()
+    {
         $this->authorizeResource(Habitant::class, 'habitant');
     }
 
     /**
      * Display a listing of the resource.
      */
-    public function index() {
+    public function index()
+    {
         $query = Habitant::forCurrentUser()->orderBy('nom');
         $habitants = $query->get();
-        
+
         if ($habitants->count() === 1 && !Auth::user()->is_admin) {
             return view('habitants.show', ['habitant' => $habitants->first()]);
         }
@@ -38,7 +41,8 @@ class HabitantController extends Controller {
     /**
      * Show the form for creating a new resource.
      */
-    public function create() {
+    public function create()
+    {
         $maisons = Maison::orderBy('numero')->get();
         return view('habitants.create', compact('maisons'));
     }
@@ -46,7 +50,8 @@ class HabitantController extends Controller {
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request) {
+    public function store(Request $request)
+    {
         $validatedData = $request->validate([
             'nom' => ['required', 'string', 'max:50'],
             'prenom' => ['required','string', 'max:50'],
@@ -86,14 +91,16 @@ class HabitantController extends Controller {
     /**
      * Display the specified resource.
      */
-    public function show(Habitant $habitant) {
+    public function show(Habitant $habitant)
+    {
         return view('habitants.show', compact('habitant'));
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Habitant $habitant) {
+    public function edit(Habitant $habitant)
+    {
         $maisons = Maison::orderBy('numero')->get();
         return view('habitants.edit', compact('habitant', 'maisons'));
     }
@@ -101,7 +108,8 @@ class HabitantController extends Controller {
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Habitant $habitant) {
+    public function update(Request $request, Habitant $habitant)
+    {
         $validatedData = $request->validate([
             'nom' => ['required', 'string', 'max:50'],
             'prenom' => ['required','string', 'max:50'],
@@ -118,11 +126,12 @@ class HabitantController extends Controller {
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Habitant $habitant) {
+    public function destroy(Habitant $habitant)
+    {
         DB::beginTransaction();
 
         try {
-        
+
             if ($habitant->user) {
                 $habitant->user->delete();
             }
