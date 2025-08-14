@@ -1,19 +1,21 @@
 <x-app-layout>
 
-    <div class="max-w-4xl mx-auto py-12 sm:py-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+        <div class="bg-white p-6 sm:p-8 rounded-3xl shadow-md border border-gray-100">
 
-        <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-
-            <div class="px-6 py-4 bg-gradient-to-r from-indigo-500 to-blue-500">
-                <h2 class="text-xl font-semibold text-white">
+            <div class="pb-6 border-b border-gray-200">
+                <h1 class="text-3xl font-bold text-gray-900">
                     Modifier la demande de certificat
-                </h2>
+                </h1>
+                <p class="mt-2 text-gray-500">
+                    Mettez à jour les informations du certificat et les fichiers associés.
+                </p>
             </div>
 
             <form method="POST" action="{{ route('certificats.update', $certificat) }}" enctype="multipart/form-data"
-                class="px-6 py-6">
+                class="mt-8 space-y-6">
                 @csrf
-                @method('PUT') {{-- Indique que c'est une requête PUT pour la mise à jour --}}
+                @method('PUT')
 
                 <div>
                     <x-input-label for="habitant_id" :value="__('Demandeur')" />
@@ -31,125 +33,126 @@
                             </option>
                         @endforeach
                     </x-select-input>
-                    <x-input-error :messages="$errors->get('habitant_id')" />
+                    <x-input-error :messages="$errors->get('habitant_id')" class="mt-2" />
                 </div>
 
-                <!-- Grille responsive pour les détails du demandeur -->
-                <div class="mt-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    <div>
-                        <x-input-label for="nom" :value="__('Nom & Prénoms')" />
-                        <x-text-input id="nom" name="nom" disabled class="bg-gray-100 w-full"
-                            value="{{ $certificat->habitant->full_name ?? '' }}" />
-                    </div>
-                    <div>
-                        <x-input-label for="date_naissance" :value="__('Date de naissance')" />
-                        <x-text-input id="date_naissance" name="date_naissance" disabled class="bg-gray-100 w-full"
-                            value="{{ \Carbon\Carbon::parse($certificat->habitant->date_naissance)->format('d/m/Y') ?? '' }}" />
-                    </div>
-                    <div>
-                        <x-input-label for="lieu_naissance" :value="__('Lieu de naissance')" />
-                        <x-text-input id="lieu_naissance" name="lieu_naissance" disabled class="bg-gray-100 w-full"
-                            value="{{ $certificat->habitant->lieu_naissance ?? '' }}" />
-                    </div>
-                    <div>
-                        <x-input-label for="telephone" :value="__('Téléphone')" />
-                        <x-text-input id="telephone" name="telephone" disabled class="bg-gray-100 w-full"
-                            value="{{ $certificat->habitant->telephone ?? '' }}" />
-                    </div>
-                    <div>
-                        <x-input-label for="maison" :value="__('Maison')" />
-                        <x-text-input id="maison" name="maison" disabled class="bg-gray-100 w-full"
-                            value="{{ $certificat->habitant->maison->full_name ?? '' }}" />
-                    </div>
-                    <div>
-                        <x-input-label for="quartier" :value="__('Quartier')" />
-                        <x-text-input id="quartier" name="quartier" disabled class="bg-gray-100 w-full"
-                            value="{{ $certificat->habitant->maison->quartier->nom ?? '' }}" />
-                    </div>
-                </div>
-
-
-                <h2
-                    class="text-xl font-semibold text-gray-800 mt-8 mb-4 leading-tight">
-                    Documents à fournir
-                </h2>
-                
-                <div class="mt-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 items-center">
-                    <div>
-                        <x-input-label for="piece_identite" :value="__('Type pièce d\'identité')" class="sr-only" />
-                        <x-select-input name="piece_identite" id="piece_identite" class="w-full">
-                            <option value="" disabled class="text-gray-400">Type pièce d'identité</option>
-                            <option value="CNI"
-                                {{ $certificat->piece_identite == 'CNI' || old('piece_identite') == 'CNI' ? 'selected' : '' }}>
-                                Carte d'identité</option>
-                            <option value="Passeport"
-                                {{ $certificat->piece_identite == 'Passeport' || old('piece_identite') == 'Passeport' ? 'selected' : '' }}>
-                                Passeport</option>
-                            <option value="Autre"
-                                {{ $certificat->piece_identite == 'Autre' || old('piece_identite') == 'Autre' ? 'selected' : '' }}>
-                                Autre</option>
-                        </x-select-input>
-                    </div>
-                    @if ($certificat->piece_identite_file_path)
+                <div class="p-6 bg-gray-50 rounded-2xl shadow-sm space-y-4">
+                    <h3 class="text-xl font-semibold text-gray-800">
+                        Informations du demandeur
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         <div>
-                            <p class=" mt-1">Fichier actuel:
-                                <a href="{{ Storage::url($certificat->piece_identite_file_path) }}" target="_blank"
-                                    class="text-indigo-600 hover:underline">{{ $certificat->piece_identite_slug }}</a>
-                            </p>
+                            <x-input-label for="nom" :value="__('Nom & Prénoms')" />
+                            <x-text-input id="nom" name="nom" disabled class="bg-gray-100"
+                                value="{{ $certificat->habitant->full_name ?? '' }}" />
                         </div>
-                    @endif
-                    <div>
-                        <x-input-label for="piece_identite_file_path" :value="__('Fichier pièce d\'identité')" class="sr-only" />
-                        <input type="file" id="piece_identite_file_path" name="piece_identite_file_path"
-                            class="block w-full text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none file:mr-4 file:py-2.5 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100" />
-                        <x-input-error :messages="$errors->get('piece_identite_file_path')" class="mt-2" />
+                        <div>
+                            <x-input-label for="date_naissance" :value="__('Date de naissance')" />
+                            <x-text-input id="date_naissance" name="date_naissance" disabled class="bg-gray-100"
+                                value="{{ \Carbon\Carbon::parse($certificat->habitant->date_naissance)->format('d/m/Y') ?? '' }}" />
+                        </div>
+                        <div>
+                            <x-input-label for="lieu_naissance" :value="__('Lieu de naissance')" />
+                            <x-text-input id="lieu_naissance" name="lieu_naissance" disabled class="bg-gray-100"
+                                value="{{ $certificat->habitant->lieu_naissance ?? '' }}" />
+                        </div>
+                        <div>
+                            <x-input-label for="telephone" :value="__('Téléphone')" />
+                            <x-text-input id="telephone" name="telephone" disabled class="bg-gray-100"
+                                value="{{ $certificat->habitant->telephone ?? '' }}" />
+                        </div>
+                        <div>
+                            <x-input-label for="maison" :value="__('Maison')" />
+                            <x-text-input id="maison" name="maison" disabled class="bg-gray-100"
+                                value="{{ $certificat->habitant->maison->full_name ?? '' }}" />
+                        </div>
+                        <div>
+                            <x-input-label for="quartier" :value="__('Quartier')" />
+                            <x-text-input id="quartier" name="quartier" disabled class="bg-gray-100"
+                                value="{{ $certificat->habitant->maison->quartier->nom ?? '' }}" />
+                        </div>
                     </div>
-
                 </div>
 
-                <div class="mt-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 items-center">
-                    <div>
-                        <x-input-label for="justificatif_domicile" :value="__('Type justificatif de domicile')" class="sr-only" />
-                        <x-select-input name="justificatif_domicile" id="justificatif_domicile" class="w-full">
-                            <option value="" disabled class="text-gray-400">Justificatif domicile</option>
-                            <option value="FACTURE_ELECTRICITE"
-                                {{ $certificat->justificatif_domicile == 'FACTURE_ELECTRICITE' || old('justificatif_domicile') == 'FACTURE_ELECTRICITE' ? 'selected' : '' }}>
-                                facture d'électricité</option>
-                            <option value="FACTURE_EAU"
-                                {{ $certificat->justificatif_domicile == 'FACTURE_EAU' || old('justificatif_domicile') == 'FACTURE_EAU' ? 'selected' : '' }}>
-                                facture d'eau</option>
-                            <option value="FACTURE_TEL"
-                                {{ $certificat->justificatif_domicile == 'FACTURE_TEL' || old('justificatif_domicile') == 'FACTURE_TEL' ? 'selected' : '' }}>
-                                facture de téléphone</option>
-                            <option value="Autre"
-                                {{ $certificat->justificatif_domicile == 'Autre' || old('justificatif_domicile') == 'Autre' ? 'selected' : '' }}>
-                                Autre</option>
-                        </x-select-input>
-                    </div>
-                    @if ($certificat->justificatif_domicile_file_path)
-                        <div>
-                            <p class="mt-1">Fichier actuel: <a
-                                    href="{{ Storage::url($certificat->justificatif_domicile_file_path) }}"
-                                    target="_blank" class="text-indigo-600 hover:underline">{{ $certificat->justificatif_domicile_slug }}</a></p>
-                        </div>
-                    @endif
-                    <div>
-                        <x-input-label for="justificatif_domicile_file_path" :value="__('Fichier justificatif de domicile')" class="sr-only" />
-                        <input type="file" id="justificatif_domicile_file_path"
-                            name="justificatif_domicile_file_path"
-                            class="block w-full text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none file:mr-4 file:py-2.5 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100" />
-                        <x-input-error :messages="$errors->get('justificatif_domicile_file_path')" class="mt-2" />
+                <div class="p-6 bg-gray-50 rounded-2xl shadow-sm space-y-4">
+                    <h3 class="text-xl font-semibold text-gray-800">
+                        Documents à fournir
+                    </h3>
 
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <x-input-label for="piece_identite" :value="__('Type pièce d\'identité')" />
+                            <x-select-input name="piece_identite" id="piece_identite" class="w-full">
+                                <option value="" disabled class="text-gray-400">Type pièce d'identité</option>
+                                <option value="CNI"
+                                    {{ $certificat->piece_identite == 'CNI' || old('piece_identite') == 'CNI' ? 'selected' : '' }}>
+                                    Carte d'identité</option>
+                                <option value="Passeport"
+                                    {{ $certificat->piece_identite == 'Passeport' || old('piece_identite') == 'Passeport' ? 'selected' : '' }}>
+                                    Passeport</option>
+                                <option value="Autre"
+                                    {{ $certificat->piece_identite == 'Autre' || old('piece_identite') == 'Autre' ? 'selected' : '' }}>
+                                    Autre</option>
+                            </x-select-input>
+                        </div>
+                        <div>
+                            <x-input-label for="piece_identite_file_path" :value="__('Fichier pièce d\'identité')" />
+                            @if ($certificat->piece_identite_file_path)
+                                <p class="text-sm text-gray-500 mb-2">Fichier actuel : <a
+                                        href="{{ Storage::url($certificat->piece_identite_file_path) }}"
+                                        target="_blank"
+                                        class="text-indigo-600 hover:underline">{{ $certificat->piece_identite_slug }}</a>
+                                </p>
+                            @endif
+                            <input type="file" id="piece_identite_file_path" name="piece_identite_file_path"
+                                class="block w-full text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none file:mr-4 file:py-2.5 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100" />
+                            <x-input-error :messages="$errors->get('piece_identite_file_path')" class="mt-2" />
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <x-input-label for="justificatif_domicile" :value="__('Type justificatif de domicile')" />
+                            <x-select-input name="justificatif_domicile" id="justificatif_domicile" class="w-full">
+                                <option value="" disabled class="text-gray-400">Justificatif domicile</option>
+                                <option value="FACTURE_ELECTRICITE"
+                                    {{ $certificat->justificatif_domicile == 'FACTURE_ELECTRICITE' || old('justificatif_domicile') == 'FACTURE_ELECTRICITE' ? 'selected' : '' }}>
+                                    Facture d'électricité</option>
+                                <option value="FACTURE_EAU"
+                                    {{ $certificat->justificatif_domicile == 'FACTURE_EAU' || old('justificatif_domicile') == 'FACTURE_EAU' ? 'selected' : '' }}>
+                                    Facture d'eau</option>
+                                <option value="FACTURE_TEL"
+                                    {{ $certificat->justificatif_domicile == 'FACTURE_TEL' || old('justificatif_domicile') == 'FACTURE_TEL' ? 'selected' : '' }}>
+                                    Facture de téléphone</option>
+                                <option value="Autre"
+                                    {{ $certificat->justificatif_domicile == 'Autre' || old('justificatif_domicile') == 'Autre' ? 'selected' : '' }}>
+                                    Autre</option>
+                            </x-select-input>
+                        </div>
+                        <div>
+                            <x-input-label for="justificatif_domicile_file_path" :value="__('Fichier justificatif de domicile')" />
+                            @if ($certificat->justificatif_domicile_file_path)
+                                <p class="text-sm text-gray-500 mb-2">Fichier actuel : <a
+                                        href="{{ Storage::url($certificat->justificatif_domicile_file_path) }}"
+                                        target="_blank"
+                                        class="text-indigo-600 hover:underline">{{ $certificat->justificatif_domicile_slug }}</a>
+                                </p>
+                            @endif
+                            <input type="file" id="justificatif_domicile_file_path"
+                                name="justificatif_domicile_file_path"
+                                class="block w-full text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none file:mr-4 file:py-2.5 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100" />
+                            <x-input-error :messages="$errors->get('justificatif_domicile_file_path')" class="mt-2" />
+                        </div>
                     </div>
                 </div>
 
                 <div class="flex items-center justify-end space-x-4 border-t border-gray-100 pt-6 mt-6">
                     <a href="{{ route('certificats.index') }}"
-                        class="px-5 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition duration-200">
+                        class="px-5 py-2.5 font-medium text-gray-700 bg-white border border-gray-300 rounded-full hover:bg-gray-50 transition-colors duration-200">
                         Annuler
                     </a>
-                    <x-primary-button>
-                        {{ __('Mettre à jour') }}
+                    <x-primary-button class="rounded-full">
+                        Mettre à jour
                     </x-primary-button>
                 </div>
             </form>

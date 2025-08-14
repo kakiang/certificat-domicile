@@ -14,7 +14,6 @@
             <form action="{{ route('maisons.store') }}" method="POST" class="mt-8 space-y-6">
                 @csrf
 
-                <!-- Conteneur de la grille pour afficher 2 inputs par ligne -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                         <x-input-label for="quartier" :value="__('Quartier de la maison')" />
@@ -45,7 +44,6 @@
                     </div>
                 </div>
 
-                <!-- Autre conteneur de la grille pour la suite des champs -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                         <x-input-label for="numero" :value="__('Numero de la maison')" />
@@ -55,11 +53,19 @@
                     </div>
 
                     <div>
-                        <x-input-label for="description" :value="__('Description de la maison')" />
-                        <x-text-input id="description" name="description" type="text"
-                            :value="old('description')" autofocus autocomplete="description" />
-                        <x-input-error :messages="$errors->get('description')" class="mt-2" />
+                        <x-input-label for="adresse" :value="__('Adresse de la maison')" />
+                        <x-text-input id="adresse" name="adresse" type="text"
+                            :value="old('adresse')" autofocus autocomplete="adresse" />
+                        <x-input-error :messages="$errors->get('adresse')" class="mt-2" />
                     </div>
+                </div>
+
+                <div>
+                    <x-input-label for="description" :value="__('Description de la maison')" />
+                    <textarea id="description" name="description" rows="4"
+                        class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                        autofocus autocomplete="description">{{ old('description') }}</textarea>
+                    <x-input-error :messages="$errors->get('description')" class="mt-2" />
                 </div>
 
                 <div class="flex items-center justify-end space-x-4 border-t border-gray-100 pt-6">
@@ -68,7 +74,7 @@
                         Annuler
                     </a>
                     <x-primary-button class="rounded-full">
-                        {{ __('Enregistrer') }}
+                        Enregistrer
                     </x-primary-button>
                 </div>
 

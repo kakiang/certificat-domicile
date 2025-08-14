@@ -52,6 +52,9 @@
 
     </div>
 
+    @isset($scripts)
+        {{ $scripts }}
+    @endisset
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const sessionMessageContainer = document.getElementById('seesionmessage');
@@ -61,11 +64,7 @@
                 }, 10000);
             }
         });
-    </script>
-    @isset($scripts)
-        {{ $scripts }}
-    @endisset
-    
+    </script>    
 </body>
 
 </html>

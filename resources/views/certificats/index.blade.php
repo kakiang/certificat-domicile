@@ -9,7 +9,11 @@
             <tr>
                 <th scope="col"
                     class="px-6 py-3 text-left text-xs md:text-sm font-medium text-gray-500 uppercase tracking-wider">
-                    Nom & contact du beneficiaire
+                    Nom & contact du demandeur
+                </th>
+                <th scope="col"
+                    class="px-6 py-3 text-left text-xs md:text-sm font-medium text-gray-500 uppercase tracking-wider">
+                    Numero
                 </th>
                 <th scope="col"
                     class="px-6 py-3 text-left text-xs md:text-sm font-medium text-gray-500 uppercase tracking-wider">
@@ -58,6 +62,9 @@
                                 </div>
                             </div>
                         </div>
+                    </td>
+                    <td class="px-6 py-1 whitespace-nowrap">
+                        {{ $certificat->numero_certificat }}
                     </td>
                     <td class="px-6 py-1 whitespace-nowrap">
                         {{ $certificat->habitant->maison->full_name }}

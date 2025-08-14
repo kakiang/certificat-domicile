@@ -2,16 +2,13 @@
     <!-- Le conteneur principal `div` est mis à jour pour correspondre au design de la page "Demandes" -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
         <!-- La carte de détails utilise le même style moderne avec des coins arrondis et une ombre -->
-        <div class="bg-white p-6 sm:p-8 rounded-3xl shadow-xl border border-gray-100">
+        <div class="bg-white p-6 sm:p-8 rounded-3xl shadow-md border border-gray-100">
             
             <!-- Le titre est mis à jour pour un style plus propre et cohérent -->
             <div class="pb-6 border-b border-gray-200">
                 <h1 class="text-3xl font-bold text-gray-900">
                     Détails habitant
                 </h1>
-                <p class="mt-2 text-gray-500">
-                    Consultez les informations de {{ $habitant->full_name }}.
-                </p>
             </div>
 
             <div class="mt-6">

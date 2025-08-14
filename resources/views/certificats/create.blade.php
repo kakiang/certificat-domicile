@@ -1,5 +1,5 @@
 <x-app-layout>
-       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
         <div class="bg-white p-6 sm:p-8 rounded-3xl shadow-md border border-gray-100">
 
             <div class="pb-6 border-b border-gray-200">
@@ -119,7 +119,8 @@
     </div>
 
     <x-slot name="scripts">
-        
+
+        <script>
             function formatDate(dateString) {
                 if (!dateString) return '';
 
@@ -156,6 +157,7 @@
                     }
                 });
             });
-        
+        </script>
+
     </x-slot>
 </x-app-layout>

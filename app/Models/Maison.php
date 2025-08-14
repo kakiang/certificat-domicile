@@ -12,6 +12,7 @@ class Maison extends Model {
 
     protected $fillable = [
         'numero',
+        'adresse',
         'description',
         'proprietaire_id',
         'quartier_id',

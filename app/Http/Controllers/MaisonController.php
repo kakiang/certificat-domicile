@@ -32,7 +32,8 @@ class MaisonController extends Controller {
     public function store(Request $request) {
         $validatedData = $request->validate([
             'numero'=>'required|max:15',
-            'description'=>'required|max:100',
+            'adresse'=>'required|max:255',
+            'description'=>'required',
             'proprietaire_id'=>'required',
             'quartier_id'=>'required',
         ]);

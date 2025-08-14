@@ -7,6 +7,7 @@ use App\Models\Habitant;
 use App\Models\Maison;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -97,27 +98,38 @@ class CertificatController extends Controller {
             $validatedData['justificatif_domicile_slug'] = Str::slug(pathinfo($originalFileName, PATHINFO_BASENAME));
         }
 
+        DB::transaction(function () use ($validatedData) {
+        
+        $certificat = Certificat::create($validatedData);
+
         $habitant = Habitant::with('maison.quartier')->findOrFail($validatedData['habitant_id']);
-        Log::info('Informations de l\'habitant récupérées.', ['habitant_id' => $habitant->id]);
+        Log::info('\nInformations de l\'habitant récupérées.', ['habitant_id' => $habitant->id]);
 
         if ($habitant->maison && $habitant->maison->quartier) {
             $codeQuartier = Str::upper(Str::substr($habitant->maison->quartier->nom, 0, 3));
             $codeMaison = $habitant->maison->numero;
             $codeHabitant = $habitant->id;
-            $validatedData['numero_certificat'] = "{$codeQuartier}-{$codeMaison}-{$codeHabitant}";
-                    Log::info('Numéro de certificat généré.', ['numero' => $validatedData['numero_certificat']]);
+            $numeroCertificat = "{$codeQuartier}-{$codeMaison}-{$codeHabitant}{$certificat->id}";
+                    Log::info('\nNuméro de certificat généré.', ['numero' => $numeroCertificat]);
+            $certificat->numero_certificat = $numeroCertificat;
         } else {
             Log::warning('Impossible de générer le numéro de certificat car les informations de la maison ou du quartier sont manquantes.');
         }
 
         try {
-            Certificat::create($validatedData);
-            Log::info('Certificat créé avec succès.', ['data' => $validatedData]);
+            
+            $certificat->save();
+            Log::info('\nCertificat créé avec succès.', ['data' => $validatedData]);
+
+            return redirect()->route('certificats.index')
+                        ->with('success', 'Demande certificat enregistré avec succès');
         } catch (\Exception $e) {
             Log::error('Erreur lors de la création du certificat.', ['error' => $e->getMessage()]);
+
+            return redirect()->route('certificats.index')
+                        ->with('error', "Une erreur est survenue lors de la création de la demande");
         }
-        return redirect()->route('certificats.index')
-                        ->with('success', 'Demande certificat enregistré avec succès');
+        });
     }
 
     /**
@@ -226,7 +238,23 @@ class CertificatController extends Controller {
     }
 
     public function print(Certificat $certificat) {
-        return pdf()->view('pdfs.certificat', ['certificat' => $certificat])
-                    ->name('certificat-'.$certificat->numero_certificat.'.pdf');
+
+        $configData = [
+            'nom_commune' => config('commune.nom_commune'),
+            'nom_departement' => config('commune.nom_departement'),
+            'nom_region' => config('commune.nom_region'),
+            'nom_maire' => config('commune.nom_maire'),
+        ];
+
+        $signaturePath = public_path('images/sign.png');
+        $signatureData = base64_encode(file_get_contents($signaturePath));
+        $signatureSrc = 'data:image/png;base64,' . $signatureData;
+
+        return pdf()->view('pdfs.certificat', [
+            'certificat' => $certificat, 
+            'config' => $configData,
+            'signatureSrc' => $signatureSrc
+        ])->name('certificat-'.$certificat->numero_certificat.'.pdf');
+
     }
 }

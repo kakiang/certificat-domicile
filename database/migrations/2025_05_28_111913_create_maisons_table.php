@@ -14,7 +14,8 @@ return new class extends Migration
         Schema::create('maisons', function (Blueprint $table) {
             $table->id();
             $table->string('numero');
-            $table->string('description');
+            $table->string('adresse');
+            $table->text('description');
             $table->foreignId('proprietaire_id')->constrained();
             $table->foreignId('quartier_id')->constrained();
             $table->timestamps();
