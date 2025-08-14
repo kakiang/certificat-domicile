@@ -73,7 +73,7 @@
                     <td class="px-6 py-1 whitespace-nowrap text-right text-sm font-medium">
                         <div class="flex justify-end space-x-6">
                             @if ($certificat->status === 'Délivré')
-                                <a href="#">
+                                <a href="{{ route('certificats.print', $certificat) }}" target="_blank">
                                     <i
                                         class="fa-solid fa-file-circle-plus text-2xl text-indigo-600 cursor-pointer hover:text-indigo-800 transition-colors duration-200"></i>
                                 </a>

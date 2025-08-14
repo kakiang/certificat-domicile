@@ -12,6 +12,8 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 
+use function Spatie\LaravelPdf\Support\pdf;
+
 class CertificatController extends Controller {
     /**
      * Constructeur pour autoriser automatiquement les actions sur le contrôleur.
@@ -221,5 +223,10 @@ class CertificatController extends Controller {
         $certificat->delete();
         return redirect()->route('certificats.index')
                         ->with('success', 'Demande certificat supprimé avec succès');
+    }
+
+    public function print(Certificat $certificat) {
+        return pdf()->view('pdfs.certificat', ['certificat' => $certificat])
+                    ->name('certificat-'.$certificat->numero_certificat.'.pdf');
     }
 }

@@ -22,8 +22,10 @@
                     </span>
                 </div>
                 @if ($certificat->status === 'Délivré')
-                    <i
-                        class="fa-solid fa-file-circle-plus text-3xl text-indigo-600 cursor-pointer hover:text-indigo-800 transition-colors duration-200"></i>
+                    <a href="{{ route('certificats.print', $certificat) }}" target="_blank">
+                        <i
+                            class="fa-solid fa-file-circle-plus text-3xl text-indigo-600 cursor-pointer hover:text-indigo-800 transition-colors duration-200"></i>
+                    </a>
                 @endif
             </div>
 
