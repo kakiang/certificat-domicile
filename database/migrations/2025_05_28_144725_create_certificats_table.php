@@ -14,7 +14,7 @@ return new class () extends Migration {
             $table->id();
             $table->string('numero_certificat')->unique()->nullable();
             $table->dateTime('date_demande')->useCurrent();
-            $table->date('date_delivrance')->nullable();
+            $table->dateTime('date_delivrance')->nullable();
             $table->foreignId('habitant_id')->constrained();
             $table->string('piece_identite')->nullable();
             $table->string('piece_identite_file_path')->nullable();

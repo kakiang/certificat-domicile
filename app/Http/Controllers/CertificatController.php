@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Certificat;
+use App\Models\CertificatHistorique;
 use App\Models\Habitant;
 use App\Models\Maison;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -48,7 +50,7 @@ class CertificatController extends Controller
     {
         if (!Auth::check()) {
             return redirect()->route('habitants.create')
-            ->with('message', 'Please register as a Habitant first or log in.');
+                ->with('message', 'Please register as a Habitant first or log in.');
         }
 
         $habitants = Habitant::forCurrentUser()->orderBy('nom')->get();
@@ -83,7 +85,7 @@ class CertificatController extends Controller
             $habitantIdOfCurrentUser = auth()->user()->habitant->id ?? null;
             if (!$habitantIdOfCurrentUser || (int)$validatedData['habitant_id'] !== $habitantIdOfCurrentUser) {
                 return redirect()->route('certificats.create')
-                        ->with('error', 'Vous n\'êtes pas autorisé à créer une demande de certificat pour un autre habitant.');
+                    ->with('error', 'Vous n\'êtes pas autorisé à créer une demande de certificat pour un autre habitant.');
             }
         }
 
@@ -103,7 +105,6 @@ class CertificatController extends Controller
 
             return redirect()->route('certificats.index')
                 ->with('success', 'Demande de certificat enregistrée avec succès.');
-
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error('Erreur lors de la création du certificat.', ['error' => $e->getMessage()]);
@@ -183,7 +184,7 @@ class CertificatController extends Controller
             $habitantIdOfCurrentUser = auth()->user()->habitant->id ?? null;
             if (!$habitantIdOfCurrentUser || (int)$validatedData['habitant_id'] !== $habitantIdOfCurrentUser) {
                 return redirect()->route('certificats.index')
-                       ->with('error', 'Vous n\'êtes pas autorisé à créer un certificat pour un autre habitant.');
+                    ->with('error', 'Vous n\'êtes pas autorisé à créer un certificat pour un autre habitant.');
             }
         }
 
@@ -221,7 +222,7 @@ class CertificatController extends Controller
         $certificat->update($validatedData);
 
         return redirect()->route('certificats.index')
-                        ->with('success', 'Demande certificat mise à jour avec succès');
+            ->with('success', 'Demande certificat mise à jour avec succès');
     }
 
     public function update_status(Request $request, Certificat $certificat)
@@ -232,11 +233,57 @@ class CertificatController extends Controller
             'observation' => ['nullable', 'string'],
         ]);
         Log::info('Données validées avec succès.', $validatedData);
-        $certificat->update($validatedData);
 
-        Log::info('Certificat mise à jour.');
-        return redirect()->route('certificats.show', $certificat)
-                        ->with('success', 'Le statut du certificat a été mis à jour avec succès.');
+
+        try {
+            DB::beginTransaction();
+
+            if ($validatedData['status'] === 'Délivré') {
+                Log::info('Le statut a changé pour Délivré');
+
+                $date_delivrance = Carbon::now();
+                $validatedData['date_delivrance'] = $date_delivrance;
+                $certificat->update($validatedData);
+                Log::info('Certificat mise à jour avec statut Délivré');
+
+                $habitant = $certificat->habitant;
+                $maison = $habitant->maison;
+                $quartier = $maison->quartier;
+
+                CertificatHistorique::create([
+                    'certificat_id' => $certificat->id,
+                    'numero_certificat' => $certificat->numero_certificat,
+                    'habitant_nom' => $habitant->nom,
+                    'habitant_prenom' => $habitant->prenom,
+                    'habitant_telephone' => $habitant->telephone,
+                    'habitant_date_naissance' => $habitant->date_naissance,
+                    'habitant_lieu_naissance' => $habitant->lieu_naissance,
+                    'maison_adresse' => $maison->adresse,
+                    'maison_proprietaire' => $maison->full_name,
+                    'quartier_nom' => $quartier->nom,
+                    'date_demande' => $certificat->date_demande,
+                    'date_delivrance' => $certificat->date_delivrance,
+                ]);
+
+                Log::info('Enregistrement dans l\'historique créé avec succès.');
+            } else {
+                $certificat->update($validatedData);
+                Log::info('Certificat mis à jour avec statut autre que Délivré');
+            }
+
+            DB::commit();
+
+            return redirect()->route('certificats.show', $certificat)
+                ->with('success', 'Le statut du certificat a été mis à jour avec succès');
+        } catch (\Exception $ex) {
+
+            DB::rollBack();
+
+            Log::error('Erreur lors de la mise à jour du statut ou de la création de l\'historique.', ['exception' => $ex->getMessage()]);
+
+            return redirect()->route('certificats.show', $certificat)
+                ->with('error', 'Une erreur est survenue lors de la mise à jour du statut. Veuillez réessayer.');
+        }
     }
 
     /**
@@ -254,7 +301,7 @@ class CertificatController extends Controller
 
         $certificat->delete();
         return redirect()->route('certificats.index')
-                        ->with('success', 'Demande certificat supprimé avec succès');
+            ->with('success', 'Demande certificat supprimé avec succès');
     }
 
     public function print(Certificat $certificat)
@@ -268,14 +315,19 @@ class CertificatController extends Controller
         ];
 
         $signaturePath = public_path('images/sign.png');
-        $signatureData = base64_encode(file_get_contents($signaturePath));
-        $signatureSrc = 'data:image/png;base64,' . $signatureData;
+        if (file_exists($signaturePath)) {
+            $signatureData = base64_encode(file_get_contents($signaturePath));
+            $signatureSrc = 'data:image/png;base64,' . $signatureData;
+        } else {
+            $signatureSrc = null;
+        }
 
-        return pdf()->view('pdfs.certificat', [
-            'certificat' => $certificat,
+        $certHistorique = CertificatHistorique::where('certificat_id', $certificat->id)->first();
+
+        return pdf()->view('pdfs.certificathistorique', [
+            'certificat' => $certHistorique,
             'config' => $configData,
             'signatureSrc' => $signatureSrc
-        ])->name('certificat-'.$certificat->numero_certificat.'.pdf');
-
+        ])->name('certificat-' . $certificat->numero_certificat . '.pdf');
     }
 }

@@ -31,6 +31,11 @@ class Certificat extends Model
         return $this->belongsTo(Habitant::class);
     }
 
+    public function CertificatHistorique()
+    {
+        return $this->hasOne(CertificatHistorique::class);
+    }
+
     public function scopeForCurrentUser($query)
     {
         $user = auth()->user();

@@ -8,7 +8,7 @@
         <x-slot:theadcontent>
             <tr>
                 <th scope="col"
-                    class="px-6 py-3 text-left text-xs md:text-sm font-medium text-gray-500 uppercase tracking-wider">
+                    class="px-2 py-3 text-left text-xs md:text-sm font-medium text-gray-500 uppercase tracking-wider">
                     Nom & contact du demandeur
                 </th>
                 <th scope="col"
@@ -16,12 +16,16 @@
                     Numero
                 </th>
                 <th scope="col"
-                    class="px-6 py-3 text-left text-xs md:text-sm font-medium text-gray-500 uppercase tracking-wider">
+                    class="px-4 py-3 text-left text-xs md:text-sm font-medium text-gray-500 uppercase tracking-wider">
                     Maison
                 </th>
                 <th scope="col"
                     class="px-6 py-3 text-left text-xs md:text-sm font-medium text-gray-500 uppercase tracking-wider">
                     Date demande
+                </th>
+                 <th scope="col"
+                    class="px-6 py-3 text-left text-xs md:text-sm font-medium text-gray-500 uppercase tracking-wider">
+                    Date delivrance
                 </th>
                 <th scope="col"
                     class="px-6 py-3 text-left text-xs md:text-sm font-medium text-gray-500 uppercase tracking-wider">
@@ -46,14 +50,14 @@
                         ][$certificat->status] ?? 'bg-gray-100 text-gray-800';
                 @endphp
                 <tr class="hover:bg-gray-50 transition duration-150">
-                    <td class="px-6 py-1 whitespace-nowrap">
+                    <td class="px-2 py-1 whitespace-nowrap">
                         <div class="flex items-center">
                             <div
                                 class="flex-shrink-0 h-10 w-10 rounded-full bg-indigo-100 flex items-center justify-center">
                                 <span
                                     class="text-indigo-600 font-medium">{{ substr($certificat->habitant->nom, 0, 1) }}</span>
                             </div>
-                            <div class="ml-4 flex gap-4">
+                            <div class="ml-2 flex gap-4">
                                 <div class="font-medium">
                                     {{ $certificat->habitant->full_name }}
                                 </div>
@@ -66,11 +70,14 @@
                     <td class="px-6 py-1 whitespace-nowrap">
                         {{ $certificat->numero_certificat }}
                     </td>
-                    <td class="px-6 py-1 whitespace-nowrap">
+                    <td class="px-4 py-1 whitespace-nowrap">
                         {{ $certificat->habitant->maison->full_name }}
                     </td>
                     <td class="px-6 py-1 whitespace-nowrap">
                         {{ $certificat->date_demande->format('d/m/Y') }}
+                    </td>
+                    <td class="px-6 py-1 whitespace-nowrap">
+                        {{ $certificat->date_delivrance?->format('d/m/Y') }}
                     </td>
                     <td class="px-6 py-1 whitespace-nowrap ">
                         <span class="inline-flex items-center px-2 py-2 font-bold rounded-full {{ $statusClass }}">
@@ -78,7 +85,7 @@
                         </span>
                     </td>
                     <td class="px-6 py-1 whitespace-nowrap text-right text-sm font-medium">
-                        <div class="flex justify-end space-x-6">
+                        <div class="flex justify-end space-x-4">
                             @if ($certificat->status === 'Délivré')
                                 <a href="{{ route('certificats.print', $certificat) }}" target="_blank">
                                     <i
