@@ -22,8 +22,8 @@ class Certificat extends Model
     ];
 
     protected $casts = [
-        'date_demande' => 'date',
-        'date_delivrance' => 'date',
+        'date_demande' => 'datetime',
+        'date_delivrance' => 'datetime',
     ];
 
     public function Habitant()
@@ -31,9 +31,9 @@ class Certificat extends Model
         return $this->belongsTo(Habitant::class);
     }
 
-    public function CertificatHistorique()
+    public function CertificatDelivre()
     {
-        return $this->hasOne(CertificatHistorique::class);
+        return $this->hasOne(CertificatDelivre::class);
     }
 
     public function scopeForCurrentUser($query)

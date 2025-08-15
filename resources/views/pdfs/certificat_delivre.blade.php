@@ -70,33 +70,33 @@
             </div>
         </div>
 
-        <!-- Titre du document -->
+        <!-- Titre -->
         <div class="text-center mb-10">
             <h1 class="text-4xl font-extrabold tracking-wide uppercase">
                 Certificat de Domicile
             </h1>
             <p class="mt-2 text-xl font-semibold text-gray-700">
-                N° {{ \Carbon\Carbon::parse($certificat->date_delivrance)->format('Y') }}-CD-{{ $certificat->numero_certificat }}
+                N° {{ $certificat->date_delivrance->format('Y') }}-CD-{{ $certificat->numero_certificat }}
             </p>
         </div>
 
-        <!-- Corps du document -->
+        <!-- Corps -->
         <div class="text-lg leading-relaxed mt-10">
             <p>
                 Je soussigné, Monsieur {{ $config['nom_maire'] }}, Maire de la Commune de {{ $config['nom_commune'] }},
                 déclare et certifie par la présente, que :
             </p>
             <div class="p-6 rounded-lg mt-6 shadow-sm border border-gray-200">
-                <p class="mb-2"><strong>Nom et Prénoms :</strong> {{ $certificat->habitant_nom }} {{ $certificat->habitant_prnom }}</p>
+                <p class="mb-2"><strong>Nom et Prénoms :</strong> {{ $certificat->habitant_nom }} {{ $certificat->habitant_prenom }}</p>
                 <p class="mb-2"><strong>Né(e) le :</strong>
                     {{ \Carbon\Carbon::parse($certificat->habitant_date_naissance)->format('d/m/Y') }} à
                     {{ $certificat->habitant_lieu_naissance }}</p>
-                <p class="mb-2"><strong>Adresse :</strong> {{ $certificat->maison_adresse }}</p>
-                <p><strong>Quartier :</strong> {{ $certificat->quartier_nom }}</p>
+                <p class="mb-2"><strong>Adresse :</strong> {{ $certificat->habitant_maison_adresse }}</p>
+                <p><strong>Quartier :</strong> {{ $certificat->habitant_maison_quartier_nom }}</p>
             </div>
             <p class="mt-8">
                 demeure bien à l'adresse ci-dessus mentionnée, dans le quartier de
-                {{ $certificat->quartier_nom }},
+                {{ $certificat->habitant_maison_quartier_nom }},
                 Commune de Diass.
             </p>
             <p class="mt-6">

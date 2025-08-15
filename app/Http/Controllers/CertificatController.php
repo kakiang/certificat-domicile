@@ -3,9 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Certificat;
-use App\Models\CertificatHistorique;
+use App\Models\CertificatDelivre;
 use App\Models\Habitant;
-use App\Models\Maison;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -250,22 +249,23 @@ class CertificatController extends Controller
                 $maison = $habitant->maison;
                 $quartier = $maison->quartier;
 
-                CertificatHistorique::create([
+                CertificatDelivre::create([
                     'certificat_id' => $certificat->id,
                     'numero_certificat' => $certificat->numero_certificat,
+                    'habitant_id' => $habitant->id,
                     'habitant_nom' => $habitant->nom,
                     'habitant_prenom' => $habitant->prenom,
                     'habitant_telephone' => $habitant->telephone,
                     'habitant_date_naissance' => $habitant->date_naissance,
                     'habitant_lieu_naissance' => $habitant->lieu_naissance,
-                    'maison_adresse' => $maison->adresse,
-                    'maison_proprietaire' => $maison->full_name,
-                    'quartier_nom' => $quartier->nom,
+                    'habitant_maison_adresse' => $maison->adresse,
+                    'habitant_maison_proprietaire' => $maison->full_name,
+                    'habitant_maison_quartier_nom' => $quartier->nom,
                     'date_demande' => $certificat->date_demande,
                     'date_delivrance' => $certificat->date_delivrance,
                 ]);
 
-                Log::info('Enregistrement dans l\'historique créé avec succès.');
+                Log::info('Enregistrement dans certificat_delivres créé avec succès.');
             } else {
                 $certificat->update($validatedData);
                 Log::info('Certificat mis à jour avec statut autre que Délivré');
@@ -279,7 +279,7 @@ class CertificatController extends Controller
 
             DB::rollBack();
 
-            Log::error('Erreur lors de la mise à jour du statut ou de la création de l\'historique.', ['exception' => $ex->getMessage()]);
+            Log::error('Erreur lors de la mise à jour du statut ou de la création de certificat_delivre', ['exception' => $ex->getMessage()]);
 
             return redirect()->route('certificats.show', $certificat)
                 ->with('error', 'Une erreur est survenue lors de la mise à jour du statut. Veuillez réessayer.');
@@ -322,10 +322,10 @@ class CertificatController extends Controller
             $signatureSrc = null;
         }
 
-        $certHistorique = CertificatHistorique::where('certificat_id', $certificat->id)->first();
+        $certDelivre = CertificatDelivre::where('certificat_id', $certificat->id)->first();
 
-        return pdf()->view('pdfs.certificathistorique', [
-            'certificat' => $certHistorique,
+        return pdf()->view('pdfs.certificat_delivre', [
+            'certificat' => $certDelivre,
             'config' => $configData,
             'signatureSrc' => $signatureSrc
         ])->name('certificat-' . $certificat->numero_certificat . '.pdf');
