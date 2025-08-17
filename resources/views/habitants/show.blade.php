@@ -1,81 +1,93 @@
 <x-app-layout>
-    <!-- Le conteneur principal `div` est mis à jour pour correspondre au design de la page "Demandes" -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
-        <!-- La carte de détails utilise le même style moderne avec des coins arrondis et une ombre -->
         <div class="bg-white p-6 sm:p-8 rounded-3xl shadow-md border border-gray-100">
-            
-            <!-- Le titre est mis à jour pour un style plus propre et cohérent -->
-            <div class="pb-6 border-b border-gray-200">
-                <h1 class="text-3xl font-bold text-gray-900">
-                    Détails habitant
-                </h1>
+            <div class="pb-2 border-b flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                <div>
+                    <h1 class="text-3xl font-extrabold text-gray-900">
+                        Détails de l'habitant
+                    </h1>
+                </div>
+                @can('update', $habitant)
+                    <a href="{{ route('habitants.edit', $habitant) }}"
+                        class="px-6 py-3 font-semibold text-white bg-indigo-600 rounded-full hover:bg-indigo-700 transition-all duration-200 ease-in-out shadow-md hover:shadow-lg">
+                        <i class="fas fa-edit mr-2"></i> Modifier
+                    </a>
+                @endcan
             </div>
 
-            <div class="mt-6">
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    <div>
-                        <p class="text-sm font-medium text-gray-700 underline">Nom</p>
-                        <p class="font-bold text-gray-900">{{ $habitant->nom }}</p>
+            <div class="mt-8 grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <div class="bg-gray-50 p-6 rounded-2xl">
+                    <h2 class="text-xl font-semibold text-gray-800 mb-4">
+                        Informations personnelles
+                    </h2>
+                    <div class="space-y-5">
+                        <div>
+                            <p class="text-sm font-medium text-gray-500">Nom & Prénoms</p>
+                            <p class="font-bold text-gray-900">{{ $habitant->nom }} {{ $habitant->prenom }}</p>
+                        </div>
+                        <div>
+                            <p class="text-sm font-medium text-gray-500">Date & Lieu de naissance</p>
+                            <p class="font-bold text-gray-900">Né(e) le {{ $habitant->date_naissance->format('d/m/Y') }}
+                                à {{ $habitant->lieu_naissance }}</p>
+                        </div>
+                        <div>
+                            <p class="text-sm font-medium text-gray-500">Téléphone</p>
+                            <p class="font-bold text-gray-900">{{ $habitant->telephone }}</p>
+                        </div>
+                        <div>
+                            <p class="text-sm font-medium text-gray-500">Email</p>
+                            <p class="font-bold text-gray-900">{{ $habitant->user?->email ?? '--' }}</p>
+                        </div>
                     </div>
-                    <div>
-                        <p class="text-sm font-medium text-gray-700 underline">Prénoms</p>
-                        <p class="font-bold text-gray-900">{{ $habitant->prenom }}</p>
-                    </div>
-                    <div>
-                        <p class="text-sm font-medium text-gray-700 underline">Téléphone</p>
-                        <p class="font-bold text-gray-900">{{ $habitant->telephone }}</p>
-                    </div>
-                    <div>
-                        <p class="text-sm font-medium text-gray-700 underline">Date de naissance</p>
-                        <p class="font-bold text-gray-900">
-                            {{ \Carbon\Carbon::parse($habitant->date_naissance)->format('d/m/Y') }}
-                        </p>
-                    </div>
-                    <div>
-                        <p class="text-sm font-medium text-gray-700 underline">Lieu de naissance</p>
-                        <p class="font-bold text-gray-900">{{ $habitant->lieu_naissance }}</p>
-                    </div>
-                    <div>
-                        <p class="text-sm font-medium text-gray-700 underline">Maison</p>
-                        <p class="font-bold text-gray-900">
-                            @if ($habitant->maison)
+                </div>
+
+                <div class="bg-gray-50 p-6 rounded-2xl">
+                    <h2 class="text-xl font-semibold text-gray-800 mb-4">
+                        Adresse et Domicile
+                    </h2>
+                    <div class="space-y-5">
+                        <div>
+                            <p class="text-sm font-medium text-gray-500">Adresse</p>
+                            <p class="font-bold text-gray-900">{{ $habitant->maison->adresse }}</p>
+                        </div>
+                        <div>
+                            <p class="text-sm font-medium text-gray-500">Maison</p>
+                            <p class="font-bold text-gray-900">
                                 {{ $habitant->maison->full_name }}
-                            @else
-                                Non attribuée
-                            @endif
-                        </p>
+                            </p>
+                        </div>
+                        <div>
+                            <p class="text-sm font-medium text-gray-500">Quartier</p>
+                            <p class="font-bold text-gray-900">{{ $habitant->maison->quartier->nom }}</p>
+                        </div>
                     </div>
-                    <div>
-                        <p class="text-sm font-medium text-gray-700 underline">Email</p>
-                        <p class="font-bold text-gray-900">{{ $habitant->user?->email ?? '--' }}</p>
-                    </div>
-                    <div>
-                        <p class="text-sm font-medium text-gray-700 underline">Inscrit le</p>
-                        <p class="font-bold text-gray-900">
-                            {{ \Carbon\Carbon::parse($habitant->created_at)->format('d/m/Y') }}
-                        </p>
-                    </div>
-                    <div>
-                        <p class="text-sm font-medium text-gray-700 underline">Dernière mise à jour</p>
-                        <p class="font-bold text-gray-900">
-                            {{ \Carbon\Carbon::parse($habitant->updated_at)->format('d/m/Y') }}
-                        </p>
+                </div>
+
+                <div class="bg-gray-50 p-6 rounded-2xl">
+                    <h2 class="text-xl font-semibold text-gray-800 mb-4">
+                        Historique
+                    </h2>
+                    <div class="space-y-5">
+                        <div>
+                            <p class="text-sm font-medium text-gray-500">Inscrit le</p>
+                            <p class="font-bold text-gray-900">{{ $habitant->created_at->format('d/m/Y') }}</p>
+                        </div>
+                        <div>
+                            <p class="text-sm font-medium text-gray-500">Dernière mise à jour</p>
+                            <p class="font-bold text-gray-900">{{ $habitant->updated_at->format('d/m/Y') }}</p>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <div class="flex items-center justify-between border-t border-gray-100 pt-6 mt-6">
-                <a href="{{ route('habitants.index') }}"
-                    class="px-5 py-2.5 font-medium text-gray-700 bg-white border border-gray-300 rounded-full hover:bg-gray-50 transition-colors duration-200">
-                    Retour à la liste
-                </a>
-                @can('update', $habitant)
-                    <a href="{{ route('habitants.edit', $habitant) }}"
-                        class="px-5 py-2.5 font-medium text-white bg-indigo-600 rounded-full hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition-colors duration-200">
-                        Modifier
+            @if (Auth::user()->is_admin)
+                <div class="border-t border-gray-100 pt-6 mt-8 flex justify-end">
+                    <a href="{{ route('habitants.index') }}"
+                        class="px-6 py-3 font-semibold text-gray-700 bg-white border border-gray-300 rounded-full hover:bg-gray-50 transition-colors duration-200">
+                        Retour à la liste
                     </a>
-                @endcan
-            </div>
+                </div>
+            @endif
         </div>
     </div>
 </x-app-layout>

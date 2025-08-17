@@ -9,30 +9,30 @@
             <tr>
                 <th scope="col"
                     class="px-2 py-3 text-left text-xs md:text-sm font-medium text-gray-500 uppercase tracking-wider">
-                    Nom & contact du demandeur
+                    Nom du demandeur
+                </th>
+                <th scope="col"
+                    class="px-8 py-3 text-left text-xs md:text-sm font-medium text-gray-500 uppercase tracking-wider">
+                    Numero certificat
                 </th>
                 <th scope="col"
                     class="px-6 py-3 text-left text-xs md:text-sm font-medium text-gray-500 uppercase tracking-wider">
-                    Numero
-                </th>
-                <th scope="col"
-                    class="px-4 py-3 text-left text-xs md:text-sm font-medium text-gray-500 uppercase tracking-wider">
                     Maison
                 </th>
                 <th scope="col"
                     class="px-6 py-3 text-left text-xs md:text-sm font-medium text-gray-500 uppercase tracking-wider">
                     Date demande
                 </th>
-                 <th scope="col"
+                <th scope="col"
                     class="px-6 py-3 text-left text-xs md:text-sm font-medium text-gray-500 uppercase tracking-wider">
                     Date delivrance
                 </th>
                 <th scope="col"
-                    class="px-6 py-3 text-left text-xs md:text-sm font-medium text-gray-500 uppercase tracking-wider">
+                    class="px-3 py-3 text-center text-xs md:text-sm font-medium text-gray-500 uppercase tracking-wider">
                     Statut
                 </th>
                 <th scope="col"
-                    class="px-6 py-3 text-right text-xs md:text-sm font-medium text-gray-500 uppercase tracking-wider">
+                    class="px-6 py-3 text-center text-xs md:text-sm font-medium text-gray-500 uppercase tracking-wider">
                     Actions
                 </th>
             </tr>
@@ -42,12 +42,12 @@
                 @php
                     $statusClass =
                         [
-                            'En attente' => 'bg-yellow-100 text-yellow-800',
-                            'En cours de traitement' => 'bg-blue-100 text-blue-800',
-                            'Incomplète' => 'bg-red-100 text-red-800',
-                            'Délivré' => 'bg-green-100 text-green-800',
-                            'Rejété' => 'bg-red-100 text-red-500',
-                        ][$certificat->status] ?? 'bg-gray-100 text-gray-800';
+                            'En attente' => 'bg-yellow-50 text-yellow-700 ring-yellow-600/20',
+                            'En cours de traitement' => 'bg-blue-50 text-blue-700 ring-blue-600/20',
+                            'Incomplète' => 'bg-gray-50 text-gray-700 ring-gray-600/20',
+                            'Délivré' => 'bg-green-50 text-green-700 ring-green-600/20',
+                            'Rejété' => 'bg-red-50 text-red-700 ring-red-600/20',
+                        ][$certificat->status] ?? 'bg-gray-50 text-gray-700 ring-gray-600/20';
                 @endphp
                 <tr class="hover:bg-gray-50 transition duration-150">
                     <td class="px-2 py-1 whitespace-nowrap">
@@ -55,22 +55,17 @@
                             <div
                                 class="flex-shrink-0 h-10 w-10 rounded-full bg-indigo-100 flex items-center justify-center">
                                 <span
-                                    class="text-indigo-600 font-medium">{{ substr($certificat->habitant->nom, 0, 1) }}</span>
+                                    class="text-indigo-700 font-medium">{{ substr($certificat->habitant->nom, 0, 1) }}</span>
                             </div>
-                            <div class="ml-2 flex gap-4">
-                                <div class="font-medium">
-                                    {{ $certificat->habitant->full_name }}
-                                </div>
-                                <div class="text-gray-500">
-                                    {{ $certificat->habitant->telephone }}
-                                </div>
+                            <div class="ml-2 font-medium">
+                                {{ $certificat->habitant->full_name }}
                             </div>
                         </div>
                     </td>
-                    <td class="px-6 py-1 whitespace-nowrap">
+                    <td class="px-8 py-1 whitespace-nowrap">
                         {{ $certificat->numero_certificat }}
                     </td>
-                    <td class="px-4 py-1 whitespace-nowrap">
+                    <td class="px-6 py-1 whitespace-nowrap">
                         {{ $certificat->habitant->maison->full_name }}
                     </td>
                     <td class="px-6 py-1 whitespace-nowrap">
@@ -79,8 +74,8 @@
                     <td class="px-6 py-1 whitespace-nowrap">
                         {{ $certificat->date_delivrance?->format('d/m/Y') }}
                     </td>
-                    <td class="px-6 py-1 whitespace-nowrap ">
-                        <span class="inline-flex items-center px-2 py-2 font-bold rounded-full {{ $statusClass }}">
+                    <td class="px-2 py-1 whitespace-nowrap text-center">
+                        <span class="rounded-full px-3 py-1 font-semibold ring-1 ring-inset  {{ $statusClass }}">
                             {{ $certificat->status }}
                         </span>
                     </td>
@@ -92,10 +87,10 @@
                                         class="fa-solid fa-file-circle-plus text-2xl text-indigo-600 cursor-pointer hover:text-indigo-800 transition-colors duration-200"></i>
                                 </a>
                             @endif
+                            @can('view', $certificat)
+                                <x-show-link href="{{ route('certificats.show', $certificat) }}" />
+                            @endcan
                             @if ($certificat->status !== 'Délivré' || Auth::user()->is_admin)
-                                @can('view', $certificat)
-                                    <x-show-link href="{{ route('certificats.show', $certificat) }}" />
-                                @endcan
                                 @can('update', $certificat)
                                     <x-edit-link href="{{ route('certificats.edit', $certificat) }}" />
                                 @endcan

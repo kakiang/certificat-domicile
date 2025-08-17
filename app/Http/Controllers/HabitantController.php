@@ -31,7 +31,7 @@ class HabitantController extends Controller
         $query = Habitant::forCurrentUser()->orderBy('nom');
         $habitants = $query->get();
 
-        if ($habitants->count() === 1 && !Auth::user()->is_admin) {
+        if (!Auth::user()->is_admin) {
             return view('habitants.show', ['habitant' => $habitants->first()]);
         }
         $habitants = $query->paginate(15);
@@ -54,7 +54,7 @@ class HabitantController extends Controller
     {
         $validatedData = $request->validate([
             'nom' => ['required', 'string', 'max:50'],
-            'prenom' => ['required','string', 'max:50'],
+            'prenom' => ['required', 'string', 'max:50'],
             'telephone' => ['required', 'string', 'max:20'],
             'date_naissance' => ['required', 'date', 'before:today'],
             'lieu_naissance' => ['required', 'max:100'],
@@ -66,7 +66,8 @@ class HabitantController extends Controller
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
-        DB::transaction(function () use ($request, $validatedData) {
+        try {
+            DB::beginTransaction();
             $user = User::create([
                 'name' => $request->prenom . ' ' . $request->nom,
                 'email' => $request->email,
@@ -82,10 +83,20 @@ class HabitantController extends Controller
             if (!Auth::check()) {
                 Auth::login($user);
             }
-        });
 
-        return redirect()->route('habitants.index')
-                        ->with('success', 'Habitant enregistré avec succès');
+            Log::info('Compte habitant crée avec succès');
+            return redirect()->route('habitants.index')
+                ->with('success', 'Compte habitant crée avec succès');
+
+            DB::commit();
+        } catch (\Exception $ex) {
+            DB::rollBack();
+
+            Log::error('Erreur lors de la mise à jour du statut ou de la création de certificat_delivre', ['exception' => $ex->getMessage()]);
+
+            return redirect()->route('habitants.index')
+                ->with('error', 'Une erreur est survenue lors de la création du compte. Veuillez réessayer');
+        }
     }
 
     /**
@@ -112,7 +123,7 @@ class HabitantController extends Controller
     {
         $validatedData = $request->validate([
             'nom' => ['required', 'string', 'max:50'],
-            'prenom' => ['required','string', 'max:50'],
+            'prenom' => ['required', 'string', 'max:50'],
             'telephone' => ['required', 'string', 'max:20'],
             'date_naissance' => ['required', 'date', 'before:today'],
             'lieu_naissance' => ['required', 'max:100'],
@@ -120,7 +131,7 @@ class HabitantController extends Controller
         ]);
         $habitant->update($validatedData);
         return redirect()->route('habitants.show', $habitant)
-                         ->with('success', 'Les informations de l\'habitant ont été mises à jour avec succès.');
+            ->with('success', 'Les informations de l\'habitant ont été mises à jour avec succès.');
     }
 
     /**
@@ -138,13 +149,12 @@ class HabitantController extends Controller
             $habitant->delete();
             DB::commit();
             return redirect()->route('habitants.index')
-                             ->with('success', 'L\'habitant et son compte utilisateur ont été supprimés avec succès.');
-
+                ->with('success', 'L\'habitant et son compte utilisateur ont été supprimés avec succès.');
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error('Erreur lors de la suppression de l\'habitant ID ' . $habitant->id . ': ' . $e->getMessage());
             return redirect()->route('habitants.index')
-                             ->with('error', 'Une erreur est survenue lors de la suppression de l\'habitant.');
+                ->with('error', 'Une erreur est survenue lors de la suppression de l\'habitant.');
         }
     }
 }

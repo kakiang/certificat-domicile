@@ -31,4 +31,16 @@ class CertificatDelivre extends Model
     {
         return $this->belongsTo(Certificat::class);
     }
+
+    public function scopeForCurrentUser($query)
+    {
+        $user = auth()->user();
+        if ($user->is_admin) {
+            return $query;
+        }
+        if ($user->habitant) {
+            return $query->where('habitant_id', $user->habitant->id);
+        }
+        return $query->whereRaw('1=0');
+    }
 }

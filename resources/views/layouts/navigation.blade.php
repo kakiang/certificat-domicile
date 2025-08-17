@@ -33,7 +33,11 @@
                              @can('viewAny', App\Models\Certificat::class)
                                  <a href="{{ route('certificats.index') }}"
                                      class="block px-4 py-2 text-blue-700 font-medium hover:bg-gray-100">
-                                     Demandes
+                                     @if (Auth::user()->is_admin)
+                                         <span>Liste des demandes</span>
+                                     @else
+                                         <span>Mes demandes</span>
+                                     @endif
                                  </a>
                              @endcan
                              @can('create', App\Models\Certificat::class)
@@ -153,7 +157,6 @@
                  </div>
              </div>
          @endguest
-
 
      </div>
  </nav>

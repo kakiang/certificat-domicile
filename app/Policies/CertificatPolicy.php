@@ -13,7 +13,7 @@ class CertificatPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->is_admin || ($user->habitant()->exists());
+        return $user->is_admin || ($user->habitant->user_id === $user->id);
     }
 
     /**
@@ -47,7 +47,7 @@ class CertificatPolicy
      */
     public function delete(User $user, Certificat $certificat): bool
     {
-        return $user->is_admin;
+        return $user->is_admin || ($certificat->habitant && $certificat->habitant->user_id === $user->id && $certificat->status !== "Délivré");
     }
 
     /**

@@ -76,7 +76,7 @@
                 Certificat de Domicile
             </h1>
             <p class="mt-2 text-xl font-semibold text-gray-700">
-                N° {{ $certificat->date_delivrance->format('Y') }}-CD-{{ $certificat->numero_certificat }}
+                N° {{ $certificat->numero_certificat }}
             </p>
         </div>
 

@@ -140,7 +140,8 @@ class CertificatController extends Controller
             $codeQuartier = Str::upper(Str::substr($habitant->maison->quartier->nom, 0, 3));
             $codeMaison = $habitant->maison->numero;
             $codeHabitant = $habitant->id;
-            return "{$codeQuartier}-{$codeMaison}-{$codeHabitant}{$certificat->id}";
+            $annee = $certificat->date_delivrance->format('Y');
+            return "{$annee}-{$codeQuartier}-{$codeMaison}-{$codeHabitant}{$certificat->id}";
         }
 
         Log::warning('Impossible de générer le numéro de certificat car les informations de la maison ou du quartier sont manquantes.');
@@ -291,7 +292,6 @@ class CertificatController extends Controller
      */
     public function destroy(Certificat $certificat)
     {
-        // Supprimer les fichiers associés avant de supprimer l'enregistrement du certificat
         if ($certificat->piece_identite_file_path) {
             Storage::delete($certificat->piece_identite_file_path);
         }

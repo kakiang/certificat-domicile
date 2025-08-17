@@ -8,16 +8,14 @@
 
     <title>{{ config('app.name', 'Certificat Domicile') }}</title>
 
-    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Caveat+Brush&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
+    <link href="https://fonts.bunny.net/css?family=caveat-brush:400" rel="stylesheet" />
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-    <link href="https://fonts.bunny.net/css?family=caveat-brush:400" rel="stylesheet" />
 
     <style>
         body {
@@ -31,19 +29,17 @@
 </head>
 
 <body class="bg-gray-50 text-gray-800 antialiased">
-    <!-- Main container -->
+    
     <div class="min-h-screen flex flex-col">
 
-        <!-- Navigation Bar -->
         @include('layouts.navigation')
 
         @include('layouts.sessionmessage')
-        <!-- Main Content -->
+
         <main class="flex-grow">
             {{ $slot }}
         </main>
 
-        <!-- Footer -->
         <footer class="bg-white border-t border-gray-200 py-8 mt-12">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
                 <p class="text-sm text-gray-500">&copy; 2025 DomiCert. Tous droits réservés.</p>
