@@ -1,6 +1,5 @@
 <x-app-layout>
     <div>
-        <!-- Hero Section -->
         <div
             class="relative overflow-hidden pt-12 pb-24 bg-gradient-to-br from-indigo-500 to-blue-600 sm:pt-24 sm:pb-32 rounded-b-3xl">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
@@ -51,7 +50,7 @@
                     </div>
                     <h3 class="mt-6 text-xl font-semibold text-gray-900">Suivi en temps réel</h3>
                     <p class="mt-3 text-base text-gray-500">
-                        Recevez des notifications et suivez l'état de votre demande à chaque étape du processus.
+                        Suivez l'état de votre demande à chaque étape du processus.
                     </p>
                 </div>
                 <!-- Feature Card 3 -->
