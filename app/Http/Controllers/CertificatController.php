@@ -140,7 +140,7 @@ class CertificatController extends Controller
             $codeQuartier = Str::upper(Str::substr($habitant->maison->quartier->nom, 0, 3));
             $codeMaison = $habitant->maison->numero;
             $codeHabitant = $habitant->id;
-            $annee = $certificat->date_delivrance->format('Y');
+            $annee = now()->format('Y');
             return "{$annee}-{$codeQuartier}-{$codeMaison}-{$codeHabitant}{$certificat->id}";
         }
 
@@ -243,6 +243,8 @@ class CertificatController extends Controller
 
                 $date_delivrance = Carbon::now();
                 $validatedData['date_delivrance'] = $date_delivrance;
+                $annee = $date_delivrance->format('Y');
+                $validatedData['numero_certificat'] = "{$annee}-{$certificat->numero_certificat}";
                 $certificat->update($validatedData);
                 Log::info('Certificat mise à jour avec statut Délivré');
 
@@ -314,9 +316,18 @@ class CertificatController extends Controller
             'nom_maire' => config('commune.nom_maire'),
         ];
 
-        $signaturePath = public_path('images/sign.png');
-        if (file_exists($signaturePath)) {
-            $signatureData = base64_encode(file_get_contents($signaturePath));
+        // $signaturePath = public_path('images/sign.png');
+        // if (file_exists($signaturePath)) {
+        //     $signatureData = base64_encode(file_get_contents($signaturePath));
+        //     $signatureSrc = 'data:image/png;base64,' . $signatureData;
+        // } else {
+        //     $signatureSrc = null;
+        // }
+
+        $signaturePath = 'signatures/maire_signature.png';
+        if (Storage::disk('local')->exists($signaturePath)) {
+            $fileContents = Storage::disk('local')->get($signaturePath);
+            $signatureData = base64_encode($fileContents);
             $signatureSrc = 'data:image/png;base64,' . $signatureData;
         } else {
             $signatureSrc = null;

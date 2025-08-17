@@ -15,6 +15,7 @@
         "spatie/laravel-pdf": "^1.6"
     },
     "require-dev": {
+        "barryvdh/laravel-ide-helper": "^3.6",
         "fakerphp/faker": "^1.23",
         "friendsofphp/php-cs-fixer": "^3.86",
         "laravel/breeze": "^2.3",

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CertificatController;
+use App\Http\Controllers\FileController;
 use App\Http\Controllers\HabitantController;
 use App\Http\Controllers\MaisonController;
 use App\Http\Controllers\ProfileController;
@@ -30,6 +31,14 @@ Route::middleware('auth')->group(function () {
     Route::resource('certificats', CertificatController::class)->except(['create']);
     Route::put('/certificats/{certificat}/status', [CertificatController::class, 'update_status'])->name('certificats.update_status');
     Route::get('/certificats/{certificat}/print', [CertificatController::class, 'print'])->name('certificats.print');
+
+    Route::get('/download/{filePath}', [FileController::class, 'download'])
+        ->where('filePath', '.*')
+        ->name('files.download');
+
+    Route::get('/view/{filePath}', [FileController::class, 'view'])
+        ->where('filePath', '.*')
+        ->name('files.view');
 });
 
 require __DIR__ . '/auth.php';

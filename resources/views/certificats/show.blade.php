@@ -75,7 +75,7 @@
                             <div>
                                 <p class="text-sm font-medium text-gray-500">Pièce d'identité</p>
                                 @if ($certificat->piece_identite_file_path)
-                                    <a href="{{ Storage::url($certificat->piece_identite_file_path) }}" target="_blank"
+                                    <a href="{{ route('files.view', ['filePath' => $certificat->piece_identite_file_path] ) }}" target="_blank"
                                         class="inline-flex items-center text-indigo-600 hover:text-indigo-800 font-medium transition-colors duration-200">
                                         <i class="fas fa-file-alt mr-2"></i> {{ $certificat->piece_identite_slug }}
                                     </a>
@@ -86,7 +86,7 @@
                             <div>
                                 <p class="text-sm font-medium text-gray-500">Justificatif de domicile</p>
                                 @if ($certificat->justificatif_domicile_file_path)
-                                    <a href="{{ Storage::url($certificat->justificatif_domicile_file_path) }}"
+                                <a href="{{ route('files.view', ['filePath' => $certificat->justificatif_domicile_file_path] ) }}"
                                         target="_blank"
                                         class="inline-flex items-center text-indigo-600 hover:text-indigo-800 font-medium transition-colors duration-200">
                                         <i class="fas fa-file-alt mr-2"></i>
