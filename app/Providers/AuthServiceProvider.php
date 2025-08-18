@@ -6,6 +6,7 @@ use App\Models\Certificat;
 use App\Models\Habitant;
 use App\Policies\CertificatPolicy;
 use App\Policies\HabitantPolicy;
+use Gate;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
 class AuthServiceProvider extends ServiceProvider
@@ -21,6 +22,9 @@ class AuthServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->registerPolicies();
+         Gate::define('access-parametres', function ($user) {
+            return $user->is_admin === 1;
+        });
     }
 
     /**

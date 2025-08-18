@@ -92,6 +92,11 @@
                          </x-slot>
 
                          <x-slot name="content">
+                             @can('access-parametres')
+                                 <x-dropdown-link :href="route('parametres.edit')">
+                                     Paramètres
+                                 </x-dropdown-link>
+                             @endcan
                              <x-dropdown-link :href="route('profile.edit')">
                                  {{ __('Profile') }}
                              </x-dropdown-link>
