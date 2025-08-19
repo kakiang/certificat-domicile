@@ -4,6 +4,7 @@ use App\Http\Controllers\CertificatController;
 use App\Http\Controllers\FileController;
 use App\Http\Controllers\HabitantController;
 use App\Http\Controllers\MaisonController;
+use App\Http\Controllers\ParametreController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProprietaireController;
 use App\Http\Controllers\QuartierController;
@@ -23,6 +24,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    Route::get('/parametres', [ParametreController::class, 'edit'])->name('parametres.edit');
+    Route::post('/parametres', [ParametreController::class, 'store'])->name('parametres.store');
 
     Route::resource('proprietaires', ProprietaireController::class)->except(['create', 'store']);
     Route::resource('quartiers', QuartierController::class)->except(['index']);

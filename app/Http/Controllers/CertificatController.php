@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Certificat;
 use App\Models\CertificatDelivre;
 use App\Models\Habitant;
+use App\Models\Parametre;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -309,20 +310,23 @@ class CertificatController extends Controller
     public function print(Certificat $certificat)
     {
 
-        $configData = [
-            'nom_commune' => config('commune.nom_commune'),
-            'nom_departement' => config('commune.nom_departement'),
-            'nom_region' => config('commune.nom_region'),
-            'nom_maire' => config('commune.nom_maire'),
-        ];
-
-        // $signaturePath = public_path('images/sign.png');
-        // if (file_exists($signaturePath)) {
-        //     $signatureData = base64_encode(file_get_contents($signaturePath));
-        //     $signatureSrc = 'data:image/png;base64,' . $signatureData;
-        // } else {
-        //     $signatureSrc = null;
-        // }
+        $parametres = Parametre::first();
+        $configData = [];
+        if ($parametres) {
+            $configData = [
+                'nom_commune' => $parametres->nom_commune,
+                'nom_departement' => $parametres->nom_departement,
+                'nom_region' => $parametres->nom_region,
+                'nom_maire' => $parametres->nom_maire,
+            ];
+        } else {
+            $configData = [
+                'nom_commune' => config('commune.nom_commune'),
+                'nom_departement' => config('commune.nom_departement'),
+                'nom_region' => config('commune.nom_region'),
+                'nom_maire' => config('commune.nom_maire'),
+            ];
+        }
 
         $signaturePath = 'signatures/maire_signature.png';
         if (Storage::disk('local')->exists($signaturePath)) {
