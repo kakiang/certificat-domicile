@@ -244,8 +244,6 @@ class CertificatController extends Controller
 
                 $date_delivrance = Carbon::now();
                 $validatedData['date_delivrance'] = $date_delivrance;
-                $annee = $date_delivrance->format('Y');
-                $validatedData['numero_certificat'] = "{$annee}-{$certificat->numero_certificat}";
                 $certificat->update($validatedData);
                 Log::info('Certificat mise à jour avec statut Délivré');
 
