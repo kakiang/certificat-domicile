@@ -40,6 +40,14 @@
                                     class="mt-1 block w-full" autocomplete="nom_maire" />
                         <x-input-error :messages="$errors->get('nom_maire')" class="mt-2" />
                     </div>
+
+                    <div>
+                        <x-input-label for="prix_certificat" :value="__('Prix du certificat')" />
+                        <x-text-input id="prix_certificat" name="prix_certificat" type="number"
+                                    :value="old('prix_certificat', $parametres->prix_certificat ?? '')"
+                                    class="mt-1 block w-full" autocomplete="prix_certificat" />
+                        <x-input-error :messages="$errors->get('prix_certificat')" class="mt-2" />
+                    </div>
                 </div>
 
                 <div class="mt-8 flex justify-end">

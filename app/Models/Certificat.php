@@ -17,6 +17,7 @@ class Certificat extends Model
         'justificatif_domicile',
         'justificatif_domicile_file_path',
         'justificatif_domicile_slug',
+        'is_paid',
         'status',
         'observation',
     ];
@@ -34,6 +35,18 @@ class Certificat extends Model
     public function CertificatDelivre()
     {
         return $this->hasOne(CertificatDelivre::class);
+    }
+
+    public function payments()
+    {
+        return $this->hasMany(Payment::class);
+    }
+
+     public function markAsPaid()
+    {
+        $this->update([
+            'is_paid' => true,
+        ]);
     }
 
     public function scopeForCurrentUser($query)

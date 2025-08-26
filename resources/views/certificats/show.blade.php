@@ -27,6 +27,14 @@
                         class="px-5 py-2.5 font-semibold text-white bg-indigo-600 rounded-full hover:bg-indigo-700 transition-all duration-200 ease-in-out shadow-md hover:shadow-lg">
                         <i class="fas fa-print mr-2"></i> Imprimer
                     </a>
+                @else
+                    <form action="{{ route('payment.initiate', $certificat) }}" method="POST" class="inline">
+                        @csrf
+                        <button type="submit"
+                            class="px-5 py-2.5 font-semibold text-white bg-indigo-600 rounded-full hover:bg-indigo-700 transition-all duration-200 ease-in-out shadow-md hover:shadow-lg">
+                            <i class="fas fa-credit-card mr-2 cursor-pointer transition-colors duration-200"></i> Payer
+                        </button>
+                    </form>
                 @endif
             </div>
 

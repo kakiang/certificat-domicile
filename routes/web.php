@@ -5,9 +5,11 @@ use App\Http\Controllers\FileController;
 use App\Http\Controllers\HabitantController;
 use App\Http\Controllers\MaisonController;
 use App\Http\Controllers\ParametreController;
+use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProprietaireController;
 use App\Http\Controllers\QuartierController;
+use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -19,6 +21,18 @@ Route::resource('quartiers', QuartierController::class)->only(['index']);
 Route::resource('maisons', MaisonController::class)->only(['index']);
 Route::resource('habitants', HabitantController::class)->only(['create', 'store']);
 Route::resource('certificats', CertificatController::class)->only(['create']);
+
+// PAYMENT ROUTES
+Route::post('/pay/{certificat}', [PaymentController::class, 'initiatePayment'])->name('payment.initiate');
+
+// IPN webhook route (CSRF exempt)
+Route::post('/payment/ipn', [PaymentController::class, 'handleIPN'])
+     ->name('paytech.ipn')
+     ->withoutMiddleware([VerifyCsrfToken::class]);
+
+// Redirect routes with order_id parameter
+Route::get('/payment/success/{order_id}', [PaymentController::class, 'paymentSuccess'])->name('payment.success');
+Route::get('/payment/cancel/{order_id}', [PaymentController::class, 'paymentCancel'])->name('payment.cancel');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -43,6 +57,19 @@ Route::middleware('auth')->group(function () {
     Route::get('/view/{filePath}', [FileController::class, 'view'])
         ->where('filePath', '.*')
         ->name('files.view');
+});
+
+Route::get('/test-urls', function() {
+    $controller = new App\Http\Controllers\PaymentController();
+    
+    return response()->json([
+        'ipn_url' => route('paytech.ipn'),
+        'payment_success' => route('payment.success'),
+        'payment_cancel' => route('payment.cancel'),
+        'app_env' => config('app.env'),
+        'paytech_env' => config('paytech.env'),
+        'app_url' => config('app.url'),
+    ]);
 });
 
 require __DIR__ . '/auth.php';

@@ -9,15 +9,15 @@
             <tr>
                 <th scope="col"
                     class="px-2 py-3 text-left text-xs md:text-sm font-medium text-gray-500 uppercase tracking-wider">
-                    Nom du demandeur
-                </th>
-                <th scope="col"
-                    class="px-8 py-3 text-left text-xs md:text-sm font-medium text-gray-500 uppercase tracking-wider">
-                    Numero certificat
+                    Demandeur
                 </th>
                 <th scope="col"
                     class="px-6 py-3 text-left text-xs md:text-sm font-medium text-gray-500 uppercase tracking-wider">
                     Maison
+                </th>
+                <th scope="col"
+                    class="px-8 py-3 text-left text-xs md:text-sm font-medium text-gray-500 uppercase tracking-wider">
+                    Numero certificat
                 </th>
                 <th scope="col"
                     class="px-6 py-3 text-left text-xs md:text-sm font-medium text-gray-500 uppercase tracking-wider">
@@ -62,11 +62,11 @@
                             </div>
                         </div>
                     </td>
-                    <td class="px-8 py-1 whitespace-nowrap">
-                        {{ $certificat->numero_certificat }}
-                    </td>
                     <td class="px-6 py-1 whitespace-nowrap">
                         {{ $certificat->habitant->maison->full_name }}
+                    </td>
+                    <td class="px-8 py-1 whitespace-nowrap">
+                        {{ $certificat->numero_certificat }}
                     </td>
                     <td class="px-6 py-1 whitespace-nowrap">
                         {{ $certificat->date_demande->format('d/m/Y') }}
