@@ -11,5 +11,10 @@ class Parametre extends Model
         'nom_departement',
         'nom_region',
         'nom_maire',
+        'prix_certificat'
+    ];
+
+    protected $casts = [
+        'prix_certificat' => 'float',
     ];
 }

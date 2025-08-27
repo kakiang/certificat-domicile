@@ -39,6 +39,7 @@ class ParametreController extends Controller
             'nom_departement' => 'required|string|max:255',
             'nom_region' => 'required|string|max:255',
             'nom_maire' => 'required|string|max:255',
+            'prix_certificat' => 'required|numeric|min:1',
         ]);
 
         // On récupère le premier (et seul) enregistrement et on le met à jour ou on le crée

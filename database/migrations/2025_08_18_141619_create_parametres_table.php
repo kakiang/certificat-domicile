@@ -13,10 +13,11 @@ return new class extends Migration
     {
         Schema::create('parametres', function (Blueprint $table) {
             $table->id();
-            $table->string('nom_commune')->nullable();
-            $table->string('nom_departement')->nullable();
-            $table->string('nom_region')->nullable();
-            $table->string('nom_maire')->nullable();
+            $table->string('nom_commune')->nullable(false);
+            $table->string('nom_departement')->nullable(false);
+            $table->string('nom_region')->nullable(false);
+            $table->string('nom_maire')->nullable(false);
+            $table->float('prix_certificat')->nullable(false);
             $table->timestamps();
         });
     }
