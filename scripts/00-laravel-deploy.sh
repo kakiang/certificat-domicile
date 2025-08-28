@@ -19,11 +19,21 @@ composer install --no-dev --prefer-dist --optimize-autoloader
 # Laravel setup
 php artisan storage:link || true
 
+echo "DB Laravel is connected to:"
+php artisan tinker --execute="dump(DB::connection()->getDatabaseName());"
+
+php artisan config:clear
+php artisan cache:clear
+php artisan view:clear
+
 # Optimize
-php artisan optimize:clear
+# php artisan optimize:clear || true
 php artisan optimize
 
-# Ensure session table exists
-php artisan session:table || true
+
 echo "Running migrations..."
 php artisan migrate --force || true
+
+echo "Migration status:"
+php artisan migrate:status
+echo "Laravel deployment script completed."
