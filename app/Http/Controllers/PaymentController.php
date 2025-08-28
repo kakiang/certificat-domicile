@@ -53,7 +53,7 @@ class PaymentController extends Controller
             $payment = Payment::create([
                 'order_id' => $orderId,
                 'user_id' => Auth::id(),
-                'certificat_id' => $certificat,
+                'certificat_id' => $certificat->id,
                 'item_name' => $validated['item_name'],
                 'amount' => $amount,
                 'currency' => 'XOF',
