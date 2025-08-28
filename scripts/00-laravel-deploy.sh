@@ -28,8 +28,7 @@ php artisan view:clear
 
 # Optimize
 # php artisan optimize:clear || true
-php artisan optimize
-
+# php artisan optimize
 
 echo "Running migrations..."
 php artisan migrate --force || true
