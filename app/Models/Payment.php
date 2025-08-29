@@ -42,7 +42,7 @@ class Payment extends Model
 
     public function certificat()
     {
-        $this->belongsTo(Certificat::class);
+        return $this->belongsTo(Certificat::class);
     }
 
      public function markAsInitiated($paymentToken, $response = null)
