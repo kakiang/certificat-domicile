@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use App\Models\Payment;
+use Exception;
 use Illuminate\Support\Facades\Auth;
 
 class PaymentController extends Controller
@@ -18,7 +19,7 @@ class PaymentController extends Controller
         $habitant = $certificat->habitant;
         Log::info("Initiating payment for Certificat ID: {$certificat->id}, Habitant ID: {$habitant->id}");
         $amount = Parametre::first()->prix_certificat ?? 0;
-        
+
         // $url = config('paytech.base_url') . config('paytech.routes.payment');
         // $envi = config('paytech.env', 'test');
         // Log::info("Paytech url: {$url}");
@@ -102,7 +103,7 @@ class PaymentController extends Controller
                 'API_SECRET' => config('paytech.api_secret'),
             ])
                 // ->post('https://paytech.sn/api/payment/request-payment', $payload);
-            ->post(config('paytech.base_url') . config('paytech.routes.payment'), $payload);
+                ->post(config('paytech.base_url') . config('paytech.routes.payment'), $payload);
 
             $responseData = $response->json();
 
@@ -245,40 +246,48 @@ class PaymentController extends Controller
         return response('OK', 200);
     }
 
-    public function paymentSuccess(Request $request, $orderId)
+    public function paymentSuccess($orderId)
     {
         $payment = Payment::where('order_id', $orderId)->first();
-
+        Log::info("Payment success callback for order_id: {$orderId}");
         if (!$payment) {
-            return redirect()->route('certificats.index')->with('error', 'Order not found');
+            Log::error("Payment with order_id {$orderId} not found in paymentCancel method");
+            return redirect()->route('certificats.index')
+                ->with('error', "Paiement non trouvé. Veuillez contacter l'administrateur.");
         }
 
         // If payment is already marked as success via IPN, show success page
         if ($payment->status === Payment::STATUS_SUCCESS) {
-            return view('payment.successmock', [
-                'payment' => $payment,
-                'message' => 'Votre paiement a été effectué avec succès. Merci!',
-            ]);
+            Log::info("Displaying success page for order_id: {$orderId}");
+            // return redirect()->route('payment.success', ['payment' => $payment])
+            //     ->with('success', 'Votre paiement a été effectué avec succès. Merci!');
+            return view('payment.success', ['payment' => $payment]);
         }
 
         // If IPN hasn't arrived yet, show processing message
-        return view('payment.processingmock', [
-            'payment' => $payment,
-            'message' => 'Le traitement de votre paiement est en cours. Patientez quelques instants...',
-        ]);
+        Log::info("Payment for order_id: {$orderId} is still processing.");
+        return view('payment.processing', ['payment' => $payment]);
     }
 
-    public function paymentCancel(Request $request, $orderId)
+    public function paymentCancel($orderId)
     {
         $payment = Payment::where('order_id', $orderId)->first();
-
-        if ($payment) {
-            $payment->markAsCancelled();
+        if (!$payment) {
+            Log::error("Payment with order_id {$orderId} not found in paymentCancel method");
+            return redirect()->route('certificats.index')
+                ->with('error', "Paiement non trouvé. Veuillez contacter l'administrateur.");
         }
 
-        return view('certificats.index', [
-            'payment' => $payment,
-            'message' => 'Your payment was cancelled.'
-        ]);
+        try {
+            $payment->markAsCancelled();
+
+            return redirect()->route('certificats.show', ['certificat' => $payment->certificat])
+                ->with('success', "Votre paiement a été annulé.");
+        } catch (\Exception $e) {
+            Log::error("Error cancelling payment {$orderId}: " . $e->getMessage());
+
+            return redirect()->route('certificats.show', ['certificat' => $payment->certificat])
+                ->with('error', "Une erreur est survenue lors de l\'annulation du paiement.");
+        }
     }
 }

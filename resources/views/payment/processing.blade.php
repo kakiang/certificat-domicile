@@ -6,7 +6,7 @@
                     <h1 class="text-3xl font-extrabold text-gray-900">
                         Paiement en cours de traitement
                     </h1>
-                    <p class="text-gray-600 mt-2">Veuillez patienter pendant que nous confirmons votre paiement</p>
+                    <p class="text-gray-600 mt-2">Le traitement de votre paiement est en cours. Patientez quelques instants...</p>
                 </div>
                 <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
             </div>

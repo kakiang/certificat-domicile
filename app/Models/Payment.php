@@ -40,7 +40,7 @@ class Payment extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function certficat()
+    public function certificat()
     {
         $this->belongsTo(Certificat::class);
     }
