@@ -50,7 +50,9 @@ ENV WEBROOT=/var/www/html/public \
     LOG_CHANNEL=stderr \
     COMPOSER_ALLOW_SUPERUSER=1 \
     BROWSERSHOT_NODE_BINARY=/usr/bin/node \
-    BROWSERSHOT_CHROME_PATH=/usr/bin/chromium
+    BROWSERSHOT_CHROME_PATH=/usr/bin/chromium-browser \
+    PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true \
+    PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser
 
 # Nginx site
 COPY conf/nginx/nginx-site.conf /etc/nginx/sites-enabled/default
