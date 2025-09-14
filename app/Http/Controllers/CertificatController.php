@@ -40,7 +40,7 @@ class CertificatController extends Controller
     public function index()
     {
         $certificats = Certificat::forCurrentUser()->paginate(15);
-        return view('certificats.index', compact('certificats'));
+        return view('certificats.index-card', compact('certificats'));
     }
 
     /**
@@ -50,17 +50,19 @@ class CertificatController extends Controller
     {
         if (!Auth::check()) {
             return redirect()->route('habitants.create')
-                ->with('message', 'Please register as a Habitant first or log in.');
+                ->with('message', 'Vous devez d\'abord vous connecter ou créer votre profil habitant.');
         }
 
         $habitants = Habitant::forCurrentUser()->orderBy('nom')->get();
 
         if ($habitants->isEmpty()) {
             return redirect()->route('habitants.create')
-                ->with('message', 'You need to create a Habitant profile first.');
+                ->with('message', 'Vous devez d\'abord créer votre profil habitant.');
         }
 
-        return view('certificats.create', compact('habitants'));
+        $singleHabitant = $habitants->count() === 1 ? $habitants->first() : null;
+
+        return view('certificats.create', compact('habitants', 'singleHabitant'));
     }
 
     /**
@@ -68,7 +70,7 @@ class CertificatController extends Controller
      */
     public function store(Request $request)
     {
-        Log::info('Début de la méthode store pour CertificatController.');
+        Log::info('Début de la création du certificat.');
 
         $fileSizeMax = 1024 * 5;
         $validatedData = $request->validate([

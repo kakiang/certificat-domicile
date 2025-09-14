@@ -35,7 +35,7 @@ class HabitantController extends Controller
             return view('habitants.show', ['habitant' => $habitants->first()]);
         }
         $habitants = $query->paginate(15);
-        return view('habitants.index', compact('habitants'));
+        return view('habitants.index-card', compact('habitants'));
     }
 
     /**
@@ -52,6 +52,8 @@ class HabitantController extends Controller
      */
     public function store(Request $request)
     {
+        Log::info('Début du processus de création de l\'habitant');
+        
         $validatedData = $request->validate([
             'nom' => ['required', 'string', 'max:50'],
             'prenom' => ['required', 'string', 'max:50'],
@@ -61,10 +63,14 @@ class HabitantController extends Controller
             'maison_id' => ['required', 'exists:maisons,id'],
         ]);
 
+        Log::info('Validation des données réussie pour la création de l\'habitant', ['data' => $validatedData]);
+
         $request->validate([
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
+
+        Log::info('Validation des données email et mot de passe réussie pour la création de l\'utilisateur');
 
         try {
             DB::beginTransaction();
@@ -74,26 +80,33 @@ class HabitantController extends Controller
                 'password' => Hash::make($request->password),
             ]);
 
+            Log::info('Utilisateur créé avec succès', ['user' => $user]);
+
             $validatedData['user_id'] = $user->id;
 
             Habitant::create($validatedData);
 
+            Log::info('Habitant créé avec succès');
+
             event(new Registered($user));
 
             if (!Auth::check()) {
+                Log::info('Aucun utilisateur connecté, connexion automatique de l\'utilisateur créé');
                 Auth::login($user);
+            } else {
+                Log::info('Utilisateur déjà connecté, pas de connexion automatique nécessaire');
             }
 
-            Log::info('Compte habitant crée avec succès');
+            DB::commit();
+
+            Log::info('Processus de création de l\'habitant et de l\'utilisateur terminé avec succès');
+
             return redirect()->route('habitants.index')
                 ->with('success', 'Compte habitant crée avec succès');
 
-            DB::commit();
         } catch (\Exception $ex) {
+            Log::error('Exception lors de la création de l\'habitant ou de l\'utilisateur', ['exception' => $ex->getMessage()]);
             DB::rollBack();
-
-            Log::error('Erreur lors de la mise à jour du statut ou de la création de certificat_delivre', ['exception' => $ex->getMessage()]);
-
             return redirect()->route('habitants.index')
                 ->with('error', 'Une erreur est survenue lors de la création du compte. Veuillez réessayer');
         }
