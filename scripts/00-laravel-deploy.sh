@@ -23,8 +23,8 @@ echo "DB Laravel is connected to:"
 php artisan tinker --execute="dump(DB::connection()->getDatabaseName());"
 
 php artisan config:clear
-php artisan cache:clear
-php artisan view:clear
+# php artisan cache:clear
+# php artisan view:clear
 
 # Optimize
 # php artisan optimize:clear || true
@@ -32,6 +32,9 @@ php artisan view:clear
 
 echo "Running migrations..."
 php artisan migrate --force || true
+
+echo "Seeding database..."
+php artisan db:seed --force || true
 
 echo "Migration status:"
 php artisan migrate:status
