@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 use function Spatie\LaravelPdf\Support\pdf;
 
@@ -338,11 +339,12 @@ class CertificatController extends Controller
         }
 
         $certDelivre = CertificatDelivre::where('certificat_id', $certificat->id)->first();
-
+        $qrcode = QrCode::size(150)->generate(route('certificats.show', $certificat));
         return pdf()->view('pdfs.certificat_delivre', [
             'certificat' => $certDelivre,
             'config' => $configData,
-            'signatureSrc' => $signatureSrc
+            'signatureSrc' => $signatureSrc,
+            'qrcode' => $qrcode,
         ])->name('certificat-' . $certificat->numero_certificat . '.pdf');
     }
 }

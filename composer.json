@@ -12,6 +12,7 @@
         "php": "^8.2",
         "laravel/framework": "^12.0",
         "laravel/tinker": "^2.10.1",
+        "simplesoftwareio/simple-qrcode": "^4.2",
         "spatie/laravel-pdf": "^1.6"
     },
     "require-dev": {

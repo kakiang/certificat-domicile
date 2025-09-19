@@ -110,6 +110,12 @@
                 <p>
                     Fait à {{ $config['nom_commune'] }}, le {{ \Carbon\Carbon::parse($certificat->date_delivrance)->locale('fr')->isoFormat('D MMMM Y') }}
                 </p>
+                <div
+                    class="w-72 h-48 mt-2 flex items-center justify-center">
+                    @if (isset($qrcode))
+                        {!! $qrcode !!}
+                    @endif
+                </div>
             </div>
             <div class="text-center">
                 <p class="font-semibold uppercase">Le Maire</p>
