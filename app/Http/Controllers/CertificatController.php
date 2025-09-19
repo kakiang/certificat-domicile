@@ -348,7 +348,7 @@ class CertificatController extends Controller
         $signaturePath = $this->get_signature_path();
         if (!$signaturePath) {
             Log::error('Le fichier de signature du maire est manquant.');
-            return back()->with("error", "Les paramètres de la commune ne sont pas configurés. Veuillez contacter l'administrateur.");
+            // return back()->with("error", "Les paramètres de la commune ne sont pas configurés. Veuillez contacter l'administrateur.");
         }
 
         $certDelivre = CertificatDelivre::where('certificat_id', $certificat->id)->first();
@@ -399,7 +399,7 @@ class CertificatController extends Controller
         }
         $signaturePath = $this->get_signature_path();
         if (!$signaturePath) {
-            return null;
+            // return null;
         }
 
         return view('pdfs.certificat_delivre', [
