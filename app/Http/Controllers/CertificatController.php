@@ -257,6 +257,7 @@ class CertificatController extends Controller
                 CertificatDelivre::create([
                     'certificat_id' => $certificat->id,
                     'numero_certificat' => $certificat->numero_certificat,
+                    'code_secret' => $certificat->code_secret,
                     'habitant_id' => $habitant->id,
                     'habitant_nom' => $habitant->nom,
                     'habitant_prenom' => $habitant->prenom,
@@ -308,43 +309,103 @@ class CertificatController extends Controller
             ->with('success', 'Demande certificat supprimé avec succès');
     }
 
-    public function print(Certificat $certificat)
+    private function get_config_data()
     {
-
-        $parametres = Parametre::first();
-        $configData = [];
-        if ($parametres) {
-            $configData = [
-                'nom_commune' => $parametres->nom_commune,
-                'nom_departement' => $parametres->nom_departement,
-                'nom_region' => $parametres->nom_region,
-                'nom_maire' => $parametres->nom_maire,
-            ];
-        } else {
-            $configData = [
-                'nom_commune' => config('commune.nom_commune'),
-                'nom_departement' => config('commune.nom_departement'),
-                'nom_region' => config('commune.nom_region'),
-                'nom_maire' => config('commune.nom_maire'),
-            ];
+        $parametre = Parametre::first();
+        if (!$parametre) {
+            Log::error('Aucun paramètre trouvé.');
+            return null;
         }
 
+        return [
+            'nom_commune' => $parametre->nom_commune,
+            'nom_departement' => $parametre->nom_departement,
+            'nom_region' => $parametre->nom_region,
+            'nom_maire' => $parametre->nom_maire,
+        ];
+    }
+
+    private function get_signature_path()
+    {
         $signaturePath = 'signatures/maire_signature.png';
         if (Storage::disk('local')->exists($signaturePath)) {
             $fileContents = Storage::disk('local')->get($signaturePath);
             $signatureData = base64_encode($fileContents);
-            $signatureSrc = 'data:image/png;base64,' . $signatureData;
-        } else {
-            $signatureSrc = null;
+            $signature = 'data:image/png;base64,' . $signatureData;
+            return $signature;
+        }
+        return null;
+    }
+
+    public function print(Certificat $certificat)
+    {
+        $configData = $this->get_config_data();
+        if (!$configData) {
+            Log::error('Les paramètres de la commune ne sont pas configurés.');
+            return back()->with("error", "Les paramètres de la commune ne sont pas configurés. Veuillez contacter l'administrateur.");
+        }
+
+        $signaturePath = $this->get_signature_path();
+        if (!$signaturePath) {
+            Log::error('Le fichier de signature du maire est manquant.');
+            return back()->with("error", "Les paramètres de la commune ne sont pas configurés. Veuillez contacter l'administrateur.");
         }
 
         $certDelivre = CertificatDelivre::where('certificat_id', $certificat->id)->first();
-        $qrcode = QrCode::size(150)->generate(route('certificats.show', $certificat));
+
+        if (!$certDelivre) {
+            Log::error('Le certificat délivré correspondant est introuvable pour le certificat ID: ' . $certificat->id);
+            return back()->with("error", "Le certificat correspondant introuvable. Veuillez contacter l'administrateur.");
+        }
+        
+        if (!$certificat->numero_certificat || !$certificat->code_secret) {
+            Log::error('Le certificat ou le code secret est manquant pour le certificat ID: ' . $certificat->id);
+            return back()->with("error", "Une erreur est survenue. Veuillez contacter l'administrateur.");
+        }
+        $verificationUrl = route('certificats.show_certificat', [
+            'numero_certificat' => $certificat->numero_certificat,
+            'code_secret' => $certificat->code_secret,
+        ]);
+        $qrcode = QrCode::size(150)->generate($verificationUrl);
+
         return pdf()->view('pdfs.certificat_delivre', [
             'certificat' => $certDelivre,
             'config' => $configData,
-            'signatureSrc' => $signatureSrc,
+            'signaturePath' => $signaturePath,
             'qrcode' => $qrcode,
         ])->name('certificat-' . $certificat->numero_certificat . '.pdf');
+    }
+
+    public function show_certificat($numero_certificat, $code_secret)
+    {
+        $certificat = Certificat::where('numero_certificat', $numero_certificat)
+            ->where('code_secret', $code_secret)
+            ->first();
+
+        if (!$certificat) {
+            Log::warning('Tentative d\'accès non autorisée au certificat: ' . $numero_certificat);
+            return null;
+        }
+
+        $certDelivre = CertificatDelivre::where('certificat_id', $certificat->id)->first();
+        if (!$certDelivre) {
+            Log::warning('Tentative d\'accès non autorisée au certificat: ' . $numero_certificat);
+            return null;
+        }
+
+        $configData = $this->get_config_data();
+        if (!$configData) {
+            return null;
+        }
+        $signaturePath = $this->get_signature_path();
+        if (!$signaturePath) {
+            return null;
+        }
+
+        return view('pdfs.certificat_delivre', [
+            'certificat' => $certDelivre,
+            'config' => $configData,
+            'signaturePath' => $signaturePath,
+        ]);
     }
 }

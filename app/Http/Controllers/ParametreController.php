@@ -42,9 +42,10 @@ class ParametreController extends Controller
             'prix_certificat' => 'required|numeric|min:1',
         ]);
 
-        // On récupère le premier (et seul) enregistrement et on le met à jour ou on le crée
-        $parametres = Parametre::firstOrCreate([]);
-        $parametres->update($validatedData);
+        Parametre::updateOrCreate(
+            ['id' => Parametre::first()?->id],
+            $validatedData
+        );
 
         return redirect()->back()->with('success', 'Paramètres mis à jour avec succès.');
     }

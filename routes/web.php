@@ -47,8 +47,8 @@ Route::middleware('auth')->group(function () {
     Route::resource('maisons', MaisonController::class)->except(['index']);
     Route::resource('habitants', HabitantController::class)->except(['create', 'store']);
     Route::resource('certificats', CertificatController::class)->except(['create']);
-    Route::put('/certificats/{certificat}/status', [CertificatController::class, 'update_status'])->name('certificats.update_status');
-    Route::get('/certificats/{certificat}/print', [CertificatController::class, 'print'])->name('certificats.print');
+    Route::put('/certificats/status/{certificat}', [CertificatController::class, 'update_status'])->name('certificats.update_status');
+    Route::get('/certificats/print/{certificat}', [CertificatController::class, 'print'])->name('certificats.print');
 
     Route::get('/download/{filePath}', [FileController::class, 'download'])
         ->where('filePath', '.*')
@@ -58,6 +58,8 @@ Route::middleware('auth')->group(function () {
         ->where('filePath', '.*')
         ->name('files.view');
 });
+
+Route::get('/certificats/{numero_certificat}/{code_secret}', [CertificatController::class, 'show_certificat'])->name('certificats.show_certificat');
 
 Route::get('/test-urls', function() {
     $controller = new App\Http\Controllers\PaymentController();

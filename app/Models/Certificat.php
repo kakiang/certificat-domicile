@@ -3,11 +3,13 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Str;
 
 class Certificat extends Model
 {
     protected $fillable = [
         'numero_certificat',
+        'code_secret',
         'date_demande',
         'date_delivrance',
         'habitant_id',
@@ -26,6 +28,18 @@ class Certificat extends Model
         'date_demande' => 'datetime',
         'date_delivrance' => 'datetime',
     ];
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        // Générer automatiquement le code secret à la création
+        static::creating(function ($certificat) {
+            if (empty($certificat->code_secret)) {
+                $certificat->code_secret = Str::random(12);
+            }
+        });
+    }
 
     public function Habitant()
     {

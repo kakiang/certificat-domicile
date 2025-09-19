@@ -9,6 +9,7 @@ class CertificatDelivre extends Model
     protected $fillable = [
         'certificat_id',
         'numero_certificat',
+        'code_secret',
         'habitant_id',
         'habitant_nom',
         'habitant_prenom',

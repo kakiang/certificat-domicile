@@ -13,6 +13,7 @@ return new class () extends Migration {
         Schema::create('certificats', function (Blueprint $table) {
             $table->id();
             $table->string('numero_certificat')->unique()->nullable();
+            $table->string('code_secret')->unique()->nullable();
             $table->dateTime('date_demande')->useCurrent();
             $table->dateTime('date_delivrance')->nullable();
             $table->foreignId('habitant_id')->constrained();

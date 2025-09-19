@@ -15,7 +15,8 @@ return new class extends Migration
         Schema::create('certificat_delivres', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(Certificat::class)->constrained()->onDelete('cascade');
-            $table->string('numero_certificat');
+            $table->string('numero_certificat')->unique();
+            $table->string('code_secret')->unique();
             $table->string('habitant_id');
             $table->string('habitant_nom');
             $table->string('habitant_prenom');

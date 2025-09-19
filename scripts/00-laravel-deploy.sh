@@ -26,6 +26,10 @@ php artisan config:clear
 php artisan cache:clear
 php artisan view:clear
 
+echo "Resetting database..."
+# Drop all tables and re-create the database
+php artisan tinker --execute="DB::statement('DROP DATABASE ' . DB::connection()->getDatabaseName() . '; CREATE DATABASE ' . DB::connection()->getDatabaseName() . ';');" || true
+
 # Optimize
 # php artisan optimize:clear || true
 # php artisan optimize

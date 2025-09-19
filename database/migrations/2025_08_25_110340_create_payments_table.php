@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('payments', function (Blueprint $table) {
             $table->id();
             $table->string('order_id')->unique();
-            $table->foreignId('user_id')->constrained()->onDelete('set null');
-            $table->foreignId('certificat_id')->constrained()->onDelete('set null');
+            $table->foreignId('user_id')->nullable()->constrained()->onDelete('set null');
+            $table->foreignId('certificat_id')->nullable()->constrained()->onDelete('set null');
             $table->string('item_name');
             $table->decimal('amount', 10, 2);
             $table->string('currency')->default('XOF');
