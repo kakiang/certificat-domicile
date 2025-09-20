@@ -18,10 +18,10 @@ class PaymentController extends Controller
     public function index()
     {
         $user = Auth::user();
-        if (!Auth::check() || !$user->is_admin ) {
+        if (!Auth::check() || !$user->is_admin) {
             abort(403, 'Unauthorized action.');
         }
-        
+
         $payments = Payment::with(['user', 'certificat'])
             ->latest()
             ->paginate(15);
@@ -183,6 +183,50 @@ class PaymentController extends Controller
         }
     }
 
+    private function checkPaytechPaymentStatus(Payment $payment, $paymentToken, $orderId)
+    {
+        // Verify payment with PayTech
+        $verificationResponse = Http::withHeaders([
+            'API_KEY' => config('paytech.api_key'),
+            'API_SECRET' => config('paytech.api_secret'),
+        ])
+            ->post(config('paytech.base_url') . config('paytech.routes.check'), [
+                'token' => $paymentToken
+            ]);
+
+        $verificationData = $verificationResponse->json();
+
+        Log::info("PayTech Verification Response", [
+            'order_id' => $orderId,
+            'status_code' => $verificationResponse->status(),
+            'response' => $verificationData
+        ]);
+
+        if (
+            $verificationResponse->successful() &&
+            isset($verificationData['success']) &&
+            $verificationData['success'] == 1
+        ) {
+
+            Log::info("Payment verification successful for order: $orderId", $verificationData);
+            // Payment successful
+            $payment->markAsSuccess($verificationData);
+            Log::info("Payment confirmed successful for order: $orderId");
+
+            // Mark the associated certificat as paid
+            $certificat = Certificat::find($payment->certificat_id);
+            $certificat->markAsPaid();
+
+            Log::warning("No certificat found for payment ID {$payment->id}");
+        } else {
+            // Verification failed - mark as invalid
+            $errorMessage = $verificationData['message'] ?? 'Verification failed';
+            $payment->markAsInvalid($errorMessage, $verificationData);
+            Log::error("Payment verification failed for order: $orderId", $verificationData);
+        }
+        return $verificationData;
+    }
+
     /**
      * Handle PayTech IPN (Instant Payment Notification)
      */
@@ -208,53 +252,14 @@ class PaymentController extends Controller
                 return response('OK', 200);
             }
 
-            // Verify payment with PayTech
-            $verificationResponse = Http::withHeaders([
-                'API_KEY' => config('paytech.api_key'),
-                'API_SECRET' => config('paytech.api_secret'),
-            ])
-                ->timeout(15)
-                ->post(config('paytech.base_url') . config('paytech.routes.check'), [
-                    'token' => $paymentToken
-                ]);
-
-            $verificationData = $verificationResponse->json();
-
-            if (
-                $verificationResponse->successful() &&
-                isset($verificationData['success']) &&
-                $verificationData['success'] == 1
-            ) {
-
-                // Payment verified successfully
-                if ($verificationData['status'] == '1') {
-                    // Payment successful
-                    $payment->markAsSuccess($verificationData);
-                    Log::info("Payment confirmed successful for order: $orderId");
-
-                    // Mark the associated certificat as paid
-                    $certificat = Certificat::find($payment->certificat_id);
-                    if ($certificat) {
-                        $certificat->markAsPaid();
-                        Log::info("Certificat ID {$certificat->numero_certificat} marked as paid.");
-                    } else {
-                        Log::warning("No certificat found for payment ID {$payment->id}");
-                    }
-                } else {
-                    // Payment failed or cancelled
-                    $payment->markAsFailed(
-                        'Payment status: ' . ($verificationData['status'] ?? 'unknown'),
-                        $verificationData
-                    );
-                    Log::warning("Payment failed for order: $orderId", $verificationData);
-                }
-            } else {
-                // Verification failed - mark as invalid
-                $errorMessage = $verificationData['message'] ?? 'Verification failed';
-                $payment->markAsInvalid($errorMessage, $verificationData);
-                Log::error("Payment verification failed for order: $orderId", $verificationData);
-            }
+            $verificationData = $this->checkPaytechPaymentStatus($payment, $paymentToken, $orderId);
         } catch (\Exception $e) {
+            $payment->markAsFailed(
+                'Payment status: ' . ($verificationData['status'] ?? 'unknown'),
+                $verificationData
+            );
+            Log::error("Payment failed for order: $orderId", $verificationData);
+
             Log::error('PayTech IPN Processing Error: ' . $e->getMessage());
         }
 
@@ -278,6 +283,8 @@ class PaymentController extends Controller
             //     ->with('success', 'Votre paiement a été effectué avec succès. Merci!');
             return view('payment.success', ['payment' => $payment]);
         }
+
+        $this->checkPaytechPaymentStatus($payment, $payment->payment_token, $orderId);
 
         // If IPN hasn't arrived yet, show processing message
         Log::info("Payment for order_id: {$orderId} is still processing.");
