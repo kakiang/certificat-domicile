@@ -1,0 +1,38 @@
+name: Keep Render Alive
+
+on:
+  # Schedule: Run every 10 minutes
+  schedule:
+    - cron: '*/10 * * * *'
+  
+  # Allow manual triggering from GitHub UI
+  workflow_dispatch:
+  
+  # Optional: Also run on code pushes to main branch
+  push:
+    branches: [ main ]
+
+jobs:
+  ping-render:
+    name: Ping Render Server
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code (optional)
+        uses: actions/checkout@v4
+        # This step is optional but good practice
+        
+      - name: Ping Render application
+        run: |
+          echo "Pinging domicert.onrender.com at $(date)"
+          curl -s -o /dev/null -w "Status: %{http_code}\n" https://domicert.onrender.com/
+          echo "Ping completed successfully"
+        
+      - name: Log the ping
+        run: echo "$(date) - Successfully pinged domicert.onrender.com" >> ping-log.txt
+        
+      - name: Upload log artifact (optional)
+        uses: actions/upload-artifact@v4
+        with:
+          name: ping-log
+          path: ping-log.txt
