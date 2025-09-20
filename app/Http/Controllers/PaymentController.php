@@ -14,6 +14,21 @@ use Illuminate\Support\Facades\Auth;
 
 class PaymentController extends Controller
 {
+
+    public function index()
+    {
+        $user = Auth::user();
+        if (!Auth::check() || !$user->is_admin ) {
+            abort(403, 'Unauthorized action.');
+        }
+        
+        $payments = Payment::with(['user', 'certificat'])
+            ->latest()
+            ->paginate(15);
+
+        return view('payment.index', compact('payments'));
+    }
+
     public function initiatePayment(Request $request, Certificat $certificat)
     {
         $habitant = $certificat->habitant;

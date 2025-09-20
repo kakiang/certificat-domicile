@@ -45,7 +45,7 @@ class Payment extends Model
         return $this->belongsTo(Certificat::class);
     }
 
-     public function markAsInitiated($paymentToken, $response = null)
+     public function markAsInitiated($paymentToken, $response)
     {
         $this->update([
             'status' => self::STATUS_INITIATED,
@@ -54,7 +54,7 @@ class Payment extends Model
         ]);
     }
 
-    public function markAsSuccess($response = null)
+    public function markAsSuccess($response)
     {
         $this->update([
             'status' => self::STATUS_SUCCESS,
@@ -62,7 +62,7 @@ class Payment extends Model
         ]);
     }
 
-    public function markAsFailed($errorMessage, $response = null)
+    public function markAsFailed($errorMessage, $response)
     {
         $this->update([
             'status' => self::STATUS_FAILED,
@@ -79,7 +79,7 @@ class Payment extends Model
         ]);
     }
 
-    public function markAsInvalid($errorMessage, $response = null)
+    public function markAsInvalid($errorMessage, $response)
     {
         $this->update([
             'status' => self::STATUS_INVALID,

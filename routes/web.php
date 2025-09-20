@@ -57,6 +57,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/view/{filePath}', [FileController::class, 'view'])
         ->where('filePath', '.*')
         ->name('files.view');
+
+    Route::get('/payments', [PaymentController::class, 'index'])->name('payments.index');
 });
 
 Route::get('/certificats/{numero_certificat}/{code_secret}', [CertificatController::class, 'show_certificat'])->name('certificats.show_certificat');
