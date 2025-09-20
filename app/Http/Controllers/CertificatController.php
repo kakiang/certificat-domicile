@@ -360,6 +360,20 @@ class CertificatController extends Controller
         return null;
     }
 
+    private function getQrcode($certificat)
+    {
+         if (!$certificat->numero_certificat || !$certificat->code_secret) {
+            Log::error('Le certificat ou le code secret est manquant pour le certificat ID: ' . $certificat->id);
+            return null;
+        }
+        $verificationUrl = route('certificats.show_certificat', [
+            'numero_certificat' => $certificat->numero_certificat,
+            'code_secret' => $certificat->code_secret,
+        ]);
+       
+        return QrCode::size(150)->generate($verificationUrl);
+    }
+
     public function print(Certificat $certificat)
     {
         $configData = $this->get_config_data();
@@ -381,15 +395,11 @@ class CertificatController extends Controller
             return back()->with("error", "Le certificat correspondant introuvable. Veuillez contacter l'administrateur.");
         }
 
-        if (!$certificat->numero_certificat || !$certificat->code_secret) {
-            Log::error('Le certificat ou le code secret est manquant pour le certificat ID: ' . $certificat->id);
+        $qrcode = $this->getQrcode($certificat);
+        if (!$qrcode) {
+            Log::error('Erreur lors de la génération du QR code pour le certificat ID: ' . $certificat->id);
             return back()->with("error", "Une erreur est survenue. Veuillez contacter l'administrateur.");
         }
-        $verificationUrl = route('certificats.show_certificat', [
-            'numero_certificat' => $certificat->numero_certificat,
-            'code_secret' => $certificat->code_secret,
-        ]);
-        $qrcode = QrCode::size(150)->generate($verificationUrl);
 
         return pdf()->view('pdfs.certificat_delivre', [
             'certificat' => $certDelivre,
@@ -420,15 +430,22 @@ class CertificatController extends Controller
         if (!$configData) {
             return null;
         }
+
         $signature = $this->getSignature();
         if (!$signature) {
+            return null;
+        }
+
+        $qrcode = $this->getQrcode($certificat);
+        if (!$qrcode) {
             return null;
         }
 
         return view('pdfs.certificat_delivre', [
             'certificat' => $certDelivre,
             'config' => $configData,
-            'signaturePath' => $signature,
+            'signature' => $signature,
+            'qrcode' => $qrcode,
         ]);
     }
 }
