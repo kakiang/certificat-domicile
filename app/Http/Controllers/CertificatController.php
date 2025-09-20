@@ -417,28 +417,31 @@ class CertificatController extends Controller
 
         if (!$certificat) {
             Log::warning('Tentative d\'accès non autorisée au certificat: ' . $numero_certificat);
-            return null;
+            return back()->with('error', 'Certificat introuvable.');
         }
 
         $certDelivre = CertificatDelivre::where('certificat_id', $certificat->id)->first();
         if (!$certDelivre) {
-            Log::warning('Tentative d\'accès non autorisée au certificat: ' . $numero_certificat);
-            return null;
+            Log::error('Le certificat délivré correspondant est introuvable pour le certificat ID: ' . $certificat->id);
+            return back()->with("error", "Le certificat correspondant introuvable.");
         }
 
         $configData = $this->get_config_data();
         if (!$configData) {
-            return null;
+            Log::error('Les paramètres de la commune ne sont pas configurés.');
+            return back()->with("error", "Les paramètres de la commune ne sont pas configurés. Veuillez contacter l'administrateur.");
         }
 
         $signature = $this->getSignature();
         if (!$signature) {
-            return null;
+            Log::error('Le fichier de signature du maire est manquant.');
+            return back()->with("error", "Les paramètres de la commune ne sont pas configurés. Veuillez contacter l'administrateur.");
         }
 
         $qrcode = $this->getQrcode($certificat);
         if (!$qrcode) {
-            return null;
+            Log::error('Erreur lors de la génération du QR code pour le certificat ID: ' . $certificat->id);
+            return back()->with("error", "Une erreur est survenue. Veuillez contacter l'administrateur.");
         }
 
         return view('pdfs.certificat_delivre', [
