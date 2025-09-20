@@ -7,6 +7,7 @@ use App\Models\CertificatDelivre;
 use App\Models\Habitant;
 use App\Models\Parametre;
 use Carbon\Carbon;
+use finfo;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -337,6 +338,28 @@ class CertificatController extends Controller
         return null;
     }
 
+    private function getSignature()
+    {
+        $parametres = Parametre::first();
+
+        if ($parametres && $parametres->maire_signature) {
+            if (Storage::disk('local')->exists($parametres->maire_signature)) {
+                $fileContents = Storage::disk('local')->get($parametres->maire_signature);
+
+                // Detect MIME type from content
+                $finfo = new finfo(FILEINFO_MIME_TYPE);
+                $mimeType = $finfo->buffer($fileContents);
+
+                $signatureData = base64_encode($fileContents);
+                $signature = 'data:' . $mimeType . ';base64,' . $signatureData;
+
+                return $signature;
+            }
+        }
+
+        return null;
+    }
+
     public function print(Certificat $certificat)
     {
         $configData = $this->get_config_data();
@@ -345,10 +368,10 @@ class CertificatController extends Controller
             return back()->with("error", "Les paramètres de la commune ne sont pas configurés. Veuillez contacter l'administrateur.");
         }
 
-        $signaturePath = $this->get_signature_path();
-        if (!$signaturePath) {
+        $signature = $this->getSignature();
+        if (!$signature) {
             Log::error('Le fichier de signature du maire est manquant.');
-            // return back()->with("error", "Les paramètres de la commune ne sont pas configurés. Veuillez contacter l'administrateur.");
+            return back()->with("error", "Les paramètres de la commune ne sont pas configurés. Veuillez contacter l'administrateur.");
         }
 
         $certDelivre = CertificatDelivre::where('certificat_id', $certificat->id)->first();
@@ -357,7 +380,7 @@ class CertificatController extends Controller
             Log::error('Le certificat délivré correspondant est introuvable pour le certificat ID: ' . $certificat->id);
             return back()->with("error", "Le certificat correspondant introuvable. Veuillez contacter l'administrateur.");
         }
-        
+
         if (!$certificat->numero_certificat || !$certificat->code_secret) {
             Log::error('Le certificat ou le code secret est manquant pour le certificat ID: ' . $certificat->id);
             return back()->with("error", "Une erreur est survenue. Veuillez contacter l'administrateur.");
@@ -371,7 +394,7 @@ class CertificatController extends Controller
         return pdf()->view('pdfs.certificat_delivre', [
             'certificat' => $certDelivre,
             'config' => $configData,
-            'signaturePath' => $signaturePath,
+            'signature' => $signature,
             'qrcode' => $qrcode,
         ])->name('certificat-' . $certificat->numero_certificat . '.pdf');
     }
@@ -397,15 +420,15 @@ class CertificatController extends Controller
         if (!$configData) {
             return null;
         }
-        $signaturePath = $this->get_signature_path();
-        if (!$signaturePath) {
-            // return null;
+        $signature = $this->getSignature();
+        if (!$signature) {
+            return null;
         }
 
         return view('pdfs.certificat_delivre', [
             'certificat' => $certDelivre,
             'config' => $configData,
-            'signaturePath' => $signaturePath,
+            'signaturePath' => $signature,
         ]);
     }
 }

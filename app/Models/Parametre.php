@@ -11,6 +11,7 @@ class Parametre extends Model
         'nom_departement',
         'nom_region',
         'nom_maire',
+        'maire_signature',
         'prix_certificat'
     ];
 

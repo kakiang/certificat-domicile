@@ -121,8 +121,8 @@
                 <p class="font-semibold uppercase">Le Maire</p>
                 <div
                     class="w-72 h-48 mt-2 flex items-center justify-center">
-                    @if (isset($signaturePath))
-                        <img src="{{ $signaturePath }}" alt="signature" class="h-48 w-auto">
+                    @if (isset($signature))
+                        <img src="{{ $signature }}" alt="signature" class="h-48 w-auto">
                     @endif
                 </div>
             </div>

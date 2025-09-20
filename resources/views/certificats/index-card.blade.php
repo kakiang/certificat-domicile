@@ -43,12 +43,12 @@
                             </div>
                             <div class="flex items-center space-x-2">
                                 <i class="fa-solid fa-calendar-alt text-gray-500"></i>
-                                <p><span class="font-medium">Date de demande:</span> {{ $certificat->date_demande->format('d/m/Y') }}</p>
+                                <p><span class="font-medium">Date de demande:</span> {{ $certificat->date_demande->format('d/m/Y H:m') }}</p>
                             </div>
                             @if($certificat->date_delivrance)
                                 <div class="flex items-center space-x-2">
                                     <i class="fa-solid fa-check-circle text-gray-500"></i>
-                                    <p><span class="font-medium">Date de délivrance:</span> {{ $certificat->date_delivrance->format('d/m/Y') }}</p>
+                                    <p><span class="font-medium">Date de délivrance:</span> {{ $certificat->date_delivrance->format('d/m/Y H:m') }}</p>
                                 </div>
                             @endif
                         </div>
